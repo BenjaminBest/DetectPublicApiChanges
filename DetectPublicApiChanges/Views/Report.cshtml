@@ -1,0 +1,131 @@
+﻿@using RazorEngine
+@using DetectPublicApiChanges.Report.Models
+@inherits RazorEngine.Templating.TemplateBase<ReportViewModel>
+
+@{
+    ViewBag.Title = @Model.Title;
+    Layout = "_Layout";
+}
+
+
+@section Header {
+    <h1>@Model.Title</h1>
+    <h6>@Raw(@Model.Subtitle)</h6>
+}
+
+@section Navigation {
+    @{
+        <ul class="parent-menu">
+            @foreach(NavigationViewModel item in Model.Navigation)
+            {
+                <li class="heading">
+                    <a href="#@item.Anchor">@item.Name
+                        @if (item.Count != 0)
+                        {
+                            <span class="li-number">@item.Count</span>
+                        }
+                    </a> 
+                    <ul>
+                    @foreach(NavigationViewModel subItem in item.Items)
+                    {
+                        <li>
+                            <a href="#@subItem.Anchor">@subItem.Name</a> 
+                        </li>
+                    }
+                    </ul>
+                </li>
+            }
+        </ul>
+    }
+}
+
+@section Main {
+    <div class="row title">
+        <div class="column title-column">
+            <h2 id="page-title" class="ng-binding">All detected changes</h2>
+            <h3 class="page-subtitle">Below all changed classes and interfaces are in detail listed</h3>
+            <p>This report all projects, classes or interfaces which are affected by breaking changes on the left side. If you click on them, the browser
+                scrolls to the detailes for that item. The numbers on the right side of the navigation page shows how many items are affected.</p>
+            <p>The main view displays for all affected classes and interfaces the changes in detail. The header of such an detail shows the class or interface name,
+                followed by the full namespace. Below the actual changes are described.</p>
+            <p>Changes can be removed or changes methods, constructors, properties or the class/interface itself could be missed. This is outlined
+                by the tags on the right side.</p>
+            <p>Be aware that a lot of breaking changes will not (yet) be identified.&nbsp;<i class=" fa fa-exclamation-circle"></i></p>
+            @if (Model.HasChangeLog)
+            {
+                <h3 class="page-subtitle" id="#Changelog">Repository changelog</h3>
+
+                <div class="changelogItem">
+                    <table>
+                        <tbody>
+                        @foreach (ChangeLogViewModel item in Model.ChangeLog)
+                        {
+                            <tr>
+                                <td>@Raw(item.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss"))<td>
+                                <td>@Raw(item.Author)<td>
+                                <td>@Raw(item.Message)<td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+    
+    @{
+        foreach (DetailViewModel item in Model.Details)
+        {
+            <div class="row details">
+                <div class="column detail-column" id="@item.Key">
+                    <h4 class="detail-title"><i class="fa scenario-expand-icon fa-angle-down"></i><span class="detail-group-name">@item.Title</span>@item.Subtitle</h4>
+                    <div class="detail-information">
+                        <table>
+                            <tbody>
+                           @foreach (string information in item.Content)
+                           {
+                               if (!string.IsNullOrEmpty(information))
+                               {
+                                    <tr><td>@Raw(information)<td></tr>
+                               }
+                           }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="column tag-column">
+                    @foreach (string tag in item.Tags)
+                    {
+                        if (tag.Equals("Method"))
+                        {
+                            <span><a href="#"><span class="tag" style="background-color: rgb(69, 158, 19)">Method</span></a></span>
+                        }
+                        else if (tag.Equals("Constructor"))
+                        {
+                            <span><a href="#"><span class="tag" style="background-color: rgb(255, 165, 0)">Constructor</span></a></span>
+                        }
+                        else if (tag.Equals("Property"))
+                        {
+                            <span><a href="#"><span class="tag" style="background-color: rgb(0, 140, 186)">Property</span></a></span>
+                        }
+                        else if (tag.Equals("Class"))
+                        {
+                            <span><a href="#"><span class="tag" style="background-color: rgb(255, 26, 26)">Class</span></a></span>
+                        }
+                        else if (tag.Equals("Interface"))
+                        {
+                            <span><a href="#"><span class="tag" style="background-color: rgb(204, 0, 153)">Interface</span></a></span>
+                        }
+                    }
+                </div>
+            </div>
+        }
+
+    }   
+}
+
+@section Footer {
+    Copyright &copy; Benjamin Best
+}
+
+

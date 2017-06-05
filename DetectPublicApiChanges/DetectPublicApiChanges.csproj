@@ -1,0 +1,368 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F3D4809D-FB2E-4053-A86F-843D159DA96C}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DetectPublicApiChanges</RootNamespace>
+    <AssemblyName>DetectPublicApiChanges</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CommandLine, Version=1.9.71.2, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
+      <HintPath>packages\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
+    </Reference>
+    <Reference Include="Esent.Interop, Version=1.9.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\ManagedEsent.1.9.4\lib\net40\Esent.Interop.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Build, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Build.15.1.1012\lib\net46\Microsoft.Build.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Build.Framework, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Build.Framework.15.1.1012\lib\net46\Microsoft.Build.Framework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Build.Tasks.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Build.Tasks.Core.15.1.1012\lib\net46\Microsoft.Build.Tasks.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Build.Utilities.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Build.Utilities.Core.15.1.1012\lib\net46\Microsoft.Build.Utilities.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.CodeAnalysis.Common.2.1.0\lib\netstandard1.3\Microsoft.CodeAnalysis.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.CodeAnalysis.CSharp.2.1.0\lib\netstandard1.3\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp.Workspaces, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.CodeAnalysis.CSharp.Workspaces.2.1.0\lib\netstandard1.3\Microsoft.CodeAnalysis.CSharp.Workspaces.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.Elfie, Version=0.10.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.CodeAnalysis.Elfie.0.10.6\lib\net46\Microsoft.CodeAnalysis.Elfie.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.VisualBasic, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.CodeAnalysis.VisualBasic.2.1.0\lib\netstandard1.3\Microsoft.CodeAnalysis.VisualBasic.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.CodeAnalysis.VisualBasic.Workspaces.2.1.0\lib\netstandard1.3\Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.Workspaces, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.CodeAnalysis.Workspaces.Common.2.1.0\lib\net46\Microsoft.CodeAnalysis.Workspaces.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.Workspaces.Desktop, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.CodeAnalysis.Workspaces.Common.2.1.0\lib\net46\Microsoft.CodeAnalysis.Workspaces.Desktop.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NetJSON, Version=1.2.1.9, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\NetJSON.1.2.1.9\lib\net40\NetJSON.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="RazorEngine, Version=3.9.3.0, Culture=neutral, PublicKeyToken=9ee697374c7e744a, processorArchitecture=MSIL">
+      <HintPath>packages\RazorEngine.3.9.3\lib\net45\RazorEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpSvn, Version=1.8017.3940.496, Culture=neutral, PublicKeyToken=d729672594885a28, processorArchitecture=x86">
+      <HintPath>packages\SharpSvn.1.8-x86.1.8017.3940.496\lib\net40\SharpSvn.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpSvn.UI, Version=1.8017.3940.496, Culture=neutral, PublicKeyToken=33789aa53ca44aa9, processorArchitecture=MSIL">
+      <HintPath>packages\SharpSvn.1.8-x86.1.8017.3940.496\lib\net40\SharpSvn.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.AppContext, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.AppContext.4.3.0\lib\net46\System.AppContext.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Collections.Immutable.1.3.1\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Composition.AttributedModel, Version=1.0.30.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Composition.1.0.30\lib\portable-net45+win8+wp8+wpa81\System.Composition.AttributedModel.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Composition.Convention, Version=1.0.30.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Composition.1.0.30\lib\portable-net45+win8+wp8+wpa81\System.Composition.Convention.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Composition.Hosting, Version=1.0.30.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Composition.1.0.30\lib\portable-net45+win8+wp8+wpa81\System.Composition.Hosting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Composition.Runtime, Version=1.0.30.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Composition.1.0.30\lib\portable-net45+win8+wp8+wpa81\System.Composition.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Composition.TypedParts, Version=1.0.30.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Composition.1.0.30\lib\portable-net45+win8+wp8+wpa81\System.Composition.TypedParts.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Console, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Console.4.3.0\lib\net46\System.Console.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Diagnostics.FileVersionInfo, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Diagnostics.FileVersionInfo.4.3.0\lib\net46\System.Diagnostics.FileVersionInfo.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Diagnostics.StackTrace, Version=4.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Diagnostics.StackTrace.4.3.0\lib\net46\System.Diagnostics.StackTrace.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Compression, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>packages\System.IO.Compression.4.3.0\lib\net46\System.IO.Compression.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.FileSystem, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.IO.FileSystem.4.3.0\lib\net46\System.IO.FileSystem.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.IO.FileSystem.Primitives.4.3.0\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Reflection.Metadata, Version=1.4.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Reflection.Metadata.1.4.2\lib\portable-net45+win8\System.Reflection.Metadata.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Security.Cryptography.Algorithms.4.3.0\lib\net461\System.Security.Cryptography.Algorithms.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Security.Cryptography.X509Certificates.4.3.0\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Text.Encoding.CodePages, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Text.Encoding.CodePages.4.3.0\lib\net46\System.Text.Encoding.CodePages.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Threading.Thread, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Threading.Thread.4.3.0\lib\net46\System.Threading.Thread.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.ValueTuple.4.3.1\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.ReaderWriter, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Xml.ReaderWriter.4.3.0\lib\net46\System.Xml.ReaderWriter.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.XmlDocument, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Xml.XmlDocument.4.3.0\lib\net46\System.Xml.XmlDocument.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.XPath, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Xml.XPath.4.3.0\lib\net46\System.Xml.XPath.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.XPath.XDocument, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Xml.XPath.XDocument.4.3.0\lib\net46\System.Xml.XPath.XDocument.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Analysis\BreakingChangeDetection\PublicPropertyModifierDetector.cs" />
+    <Compile Include="Analysis\BreakingChangeDetection\PublicMethodModifierDetector.cs" />
+    <Compile Include="Analysis\BreakingChangeDetection\PublicConstructorModifierDetector.cs" />
+    <Compile Include="Analysis\BreakingChangeDetection\PublicInterfaceModifierDetector.cs" />
+    <Compile Include="Interfaces\IPublicClassModifierDetector.cs" />
+    <Compile Include="Analysis\BreakingChangeDetection\PublicClassModifierDetector.cs" />
+    <Compile Include="Analysis\StructureBuilders\InterfaceStructureBuilder.cs" />
+    <Compile Include="Analysis\StructureBuilders\MethodClassStructureBuilder.cs" />
+    <Compile Include="Analysis\StructureBuilders\MethodInterfaceStructureBuilder.cs" />
+    <Compile Include="Analysis\StructureBuilders\ConstructorStructureBuilder.cs" />
+    <Compile Include="Analysis\StructureBuilders\ModifierPropertyStructureBuilder.cs" />
+    <Compile Include="Analysis\StructureBuilders\ModifierInterfaceStructureBuilder.cs" />
+    <Compile Include="Analysis\StructureBuilders\ModifierConstructorStructureBuilder.cs" />
+    <Compile Include="Analysis\StructureBuilders\ModifierMethodStructureBuilder.cs" />
+    <Compile Include="Analysis\StructureBuilders\ParameterMethodStructureBuilder.cs" />
+    <Compile Include="Analysis\StructureBuilders\ModifierClassStructureBuilder.cs" />
+    <Compile Include="Analysis\StructureBuilders\ClassStructureBuilder.cs" />
+    <Compile Include="Analysis\StructureBuilders\PropertyInterfaceStructureBuilder.cs" />
+    <Compile Include="Analysis\StructureBuilders\PropertyClassStructureBuilder.cs" />
+    <Compile Include="Analysis\StructureBuilders\ParameterConstructorStructureBuilder.cs" />
+    <Compile Include="Analysis\StructureIndexers\InterfaceStructureToIndexItemConverter.cs" />
+    <Compile Include="Analysis\StructureIndexers\ConstructorStructureToIndexItemConverter.cs" />
+    <Compile Include="Analysis\StructureIndexers\MethodStructureToIndexItemConverter.cs" />
+    <Compile Include="Analysis\StructureIndexers\PropertyStructureToIndexItemConverter.cs" />
+    <Compile Include="Analysis\StructureIndexers\ClassStructureToIndexItemConverter.cs" />
+    <Compile Include="Analysis\StructureIndexers\StructureIndexComparisonResult.cs" />
+    <Compile Include="Analysis\StructureIndexers\StructureIndexKeyComparator.cs" />
+    <Compile Include="Common\FileService.cs" />
+    <Compile Include="Common\SourceControlChangeLog.cs" />
+    <Compile Include="Common\SourceControlChangeLogItem.cs" />
+    <Compile Include="Interfaces\ISourceControlChangeLog.cs" />
+    <Compile Include="Interfaces\ISourceControlChangeLogItem.cs" />
+    <Compile Include="Interfaces\ISourceControlCredentials.cs" />
+    <Compile Include="Common\SourceControlCredentials.cs" />
+    <Compile Include="Common\SubversionSourceControlClient.cs" />
+    <Compile Include="Interfaces\IFileService.cs" />
+    <Compile Include="Interfaces\IRenderer.cs" />
+    <Compile Include="Interfaces\IReportViewModelCreator.cs" />
+    <Compile Include="Interfaces\ISourceControlClient.cs" />
+    <Compile Include="Interfaces\IStructureIndexComparator.cs" />
+    <Compile Include="Interfaces\IStructureIndexComparisonResult.cs" />
+    <Compile Include="Interfaces\IStructureIndexItem.cs" />
+    <Compile Include="Interfaces\IStructureIndex.cs" />
+    <Compile Include="Analysis\StructureIndexers\StructureIndex.cs" />
+    <Compile Include="Analysis\StructureIndexers\StructureIndexItem.cs" />
+    <Compile Include="Analysis\Structures\InterfaceStructure.cs" />
+    <Compile Include="Analysis\Structures\ClassStructure.cs" />
+    <Compile Include="Analysis\Structures\ConstructorStructure.cs" />
+    <Compile Include="Analysis\Structures\MethodStructure.cs" />
+    <Compile Include="Analysis\Structures\ModifierStructure.cs" />
+    <Compile Include="Analysis\Structures\PropertyStructure.cs" />
+    <Compile Include="Analysis\Structures\ParameterStructure.cs" />
+    <Compile Include="Analysis\Structures\ProjectStructure.cs" />
+    <Compile Include="Analysis\Structures\SolutionStructure.cs" />
+    <Compile Include="Analysis\Roslyn\InterfaceDeclarationSyntaxExtensions.cs" />
+    <Compile Include="Analysis\Roslyn\MethodDeclarationSyntaxExtensions.cs" />
+    <Compile Include="Analysis\Roslyn\ClassDeclarationSyntaxExtensions.cs" />
+    <Compile Include="Analysis\Roslyn\ConstructorDeclarationSyntaxExtensions.cs" />
+    <Compile Include="Analysis\Roslyn\SyntaxNodeHelper.cs" />
+    <Compile Include="Analysis\Roslyn\WorkspaceHelper.cs" />
+    <Compile Include="Common\NetJsonSerializer.cs" />
+    <Compile Include="Common\StepBase.cs" />
+    <Compile Include="Common\JobBase.cs" />
+    <Compile Include="Common\JobRegistry.cs" />
+    <Compile Include="Common\Options.cs" />
+    <Compile Include="Common\Store.cs" />
+    <Compile Include="Common\StoreKeys.cs" />
+    <Compile Include="Extensions\DirectoryInfoExtensions.cs" />
+    <Compile Include="Extensions\EnumerableStructureLogExtensions.cs" />
+    <Compile Include="Extensions\OptionsExtensions.cs" />
+    <Compile Include="Interfaces\IBasePropertyStructureBuilder.cs" />
+    <Compile Include="Interfaces\IFileSerializer.cs" />
+    <Compile Include="Interfaces\IJobRegistry.cs" />
+    <Compile Include="Interfaces\IBaseMethodStructureBuilder.cs" />
+    <Compile Include="Interfaces\IRootTypeStructureBuilder.cs" />
+    <Compile Include="Interfaces\IStructure.cs" />
+    <Compile Include="Interfaces\IStructureToIndexItemConverter.cs" />
+    <Compile Include="Interfaces\ITypeStructureBuilder.cs" />
+    <Compile Include="Interfaces\IStore.cs" />
+    <Compile Include="Jobs\DetectChangesJob.cs" />
+    <Compile Include="NinjectBindings.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Interfaces\IJob.cs" />
+    <Compile Include="Interfaces\IOptions.cs" />
+    <Compile Include="Interfaces\IStep.cs" />
+    <Compile Include="Report\Models\ChangeLogViewModel.cs" />
+    <Compile Include="Report\Models\DetailViewModel.cs" />
+    <Compile Include="Report\Models\DifferenceViewModel.cs" />
+    <Compile Include="Report\Models\ReportViewModel.cs" />
+    <Compile Include="Report\Mvc\Renderer.cs" />
+    <Compile Include="Report\ReportViewModelCreator.cs" />
+    <Compile Include="Steps\AnalyzeDocumentTreeStep.cs" />
+    <Compile Include="Report\Mvc\HtmlTemplateBase.cs" />
+    <Compile Include="Report\Mvc\MyHtmlHelper.cs" />
+    <Compile Include="Steps\CleanupStep.cs" />
+    <Compile Include="Steps\RepositoryCheckoutStep.cs" />
+    <Compile Include="Steps\ReportCreationStep.cs" />
+    <Compile Include="Steps\IndexComparisonStep.cs" />
+    <Compile Include="Steps\InitializationStep.cs" />
+    <Compile Include="Steps\IndexCreationStep.cs" />
+    <Compile Include="Steps\PersistSolutionTreeStep.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+    <Content Include="Views\Style.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\_Layout.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\Report.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Views\web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
+    <Analyzer Include="packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
