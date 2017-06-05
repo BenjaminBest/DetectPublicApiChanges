@@ -1,5 +1,5 @@
 Detect public API changes with roslyn
-============================
+=====================================
 This repository contains a console application which can be used to compare two visual studio solutions with [roslyn](https://github.com/dotnet/roslyn) using the SyntaxTree. The program supports two modi, the first one is just using existent folders to read the solution file from. The second mode supports SVN via [SharpSvn](https://sharpsvn.open.collab.net/) and automatically checkout's two revisions which then are used for comparison.
 
 Based on the information gathered with the SyntaxTree an index for every solution is created which contains unique keys for every structure (class, interface, constructor, methods or property) including parameter and return-types, names and modifiers.
@@ -8,8 +8,12 @@ With the generated index the differences between two visual studio solutions can
 
 Finally a HTML based report is generated which contains all projects, interfaces or classes which have changes on their public API. The changes are listed in detail as well as the change-log if a source control system was used to fetch the source code.
 
+Report
+--------------
+![sample report](https://cloud.githubusercontent.com/assets/29073072/26785873/c5aa72a4-4a04-11e7-8e63-412f59c5c51a.png)
+
 Running the console application
-------------------------------------------------
+-------------------------------
 Compile the solution in release mode with at least Visual Studio 2017
 
 ### Using source control
