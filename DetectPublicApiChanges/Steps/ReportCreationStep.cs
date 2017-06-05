@@ -88,11 +88,11 @@ namespace DetectPublicApiChanges.Steps
 
                 var subtitle = string.Empty;
 
-                if (_options.RepositorySourceRevision != default(int) &&
-                    _options.RepositoryTargetRevision != default(int) &&
-                    !string.IsNullOrEmpty(_options.RepositoryUrl))
+                var connection = _store.GetItem<ISourceControlConnection>(StoreKeys.RepositoryConnection);
+
+                if (connection != null)
                 {
-                    subtitle = $"Repository: {_options.RepositoryUrl}</br>{_options.SolutionPathSource}(Rev {_options.RepositorySourceRevision}) - {_options.SolutionPathTarget}(Rev {_options.RepositoryTargetRevision})";
+                    subtitle = $"Repository: {connection.RepositoryUrl}</br>{_options.SolutionPathSource}(Rev {connection.StartRevision}) - {_options.SolutionPathTarget}(Rev {connection.EndRevision})";
                 }
                 else
                 {

@@ -13,19 +13,21 @@ Running the console application
 Compile the solution in release mode with at least Visual Studio 2017
 
 ### Using source control
-In a CMD window start the application by using parameters for the SVN connection, the solutions which should be analyzed. The program automatically creates a output directory.
-> DetectPublicApiChanges.exe --job DetectChanges --repositorySourceRevision "10" --repositoryTargetRevision "20" --repositoryUrl "https://XYZ/svn/DetectPublicApiChanges/trunk" --repositoryUser "user" --repositoryPassword "password" --solutionPathSource "DetectPublicApiChanges\DetectPublicApiChanges.sln" --solutionPathTarget "DetectPublicApiChanges\DetectPublicApiChanges.sln"
+In a CMD window start the application by using parameters for the source control connection (svn), the solutions which should be analyzed. The program automatically creates a output directory.
+> DetectPublicApiChanges.exe --repositoryConnectionString "Svn;https://XYZ/svn/DetectPublicApiChanges/trunk;20;28;user;password" --solutionPathSource "DetectPublicApiChanges\DetectPublicApiChanges.sln" --solutionPathTarget "DetectPublicApiChanges\DetectPublicApiChanges.sln"
 
-The checkout is done to folders inside the working folder which is located relative to the application and it's per defaul named "Work". The folders which contains the revisions are named "Source" and "Target".
+So a connection string is defined by 4 to 6 parts: `SourceControlSystem;URL;StartRevision;EndRevision;User;Password`, whereas user and password are optional. Currently SourceControlSystem must be `Svn`. The checkout is done to folders inside the working folder which is located relative to the application and it's per defaul named "Work". The folders which contains the revisions are named "Source" and "Target".
 
 ### Using normal local folders
 For local folders the syntax easier.
-> DetectPublicApiChanges.exe --job DetectChanges --solutionPathSource "C:\Folder1\DetectPublicApiChanges\DetectPublicApiChanges.sln" --solutionPathTarget "C:\Folder2\DetectPublicApiChanges\DetectPublicApiChanges.sln"
+> DetectPublicApiChanges.exe --solutionPathSource "C:\Folder1\DetectPublicApiChanges\DetectPublicApiChanges.sln" --solutionPathTarget "C:\Folder2\DetectPublicApiChanges\DetectPublicApiChanges.sln"
 
 ### The output folder
 The application automatically creates a working directory named "Work", by using the parameter
 > --workPath "C:\SomeAbsolutePath"
+
 this can be changed, also a relative path can be used
+
 > --workPath "..\SomeRelativePath"
 
 The program always create a unique directory inside the work-folder based on a FileTime-stamp,e.g: `131411407331414512`. The folder structure looks like this:

@@ -59,5 +59,10 @@
         /// The repository change log
         /// </summary>
         public const string RepositoryChangeLog = "RepositoryChangeLog";
+
+        /// <summary>
+        /// The repository connection
+        /// </summary>
+        public const string RepositoryConnection = "RepositoryConnection";
     }
 }

@@ -57,6 +57,9 @@ namespace DetectPublicApiChanges.Steps
 
                 _store.SetOrAddItem(StoreKeys.SolutionPathSource, _options.SolutionPathSource);
                 _store.SetOrAddItem(StoreKeys.SolutionPathTarget, _options.SolutionPathTarget);
+
+                if (!string.IsNullOrEmpty(_options.RepositoryConnectionString))
+                    _store.SetOrAddItem(StoreKeys.RepositoryConnection, SourceControlConnection.Parse(_options.RepositoryConnectionString));
             });
         }
     }

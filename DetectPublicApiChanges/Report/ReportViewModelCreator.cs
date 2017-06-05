@@ -32,7 +32,7 @@ namespace DetectPublicApiChanges.Report
                 Navigation = CreateNavigation(details, indexComparison),
                 Details = details,
                 ChangeLog = CreateChangeLog(changeLog),
-                HasChangeLog = changeLog.Items.Any()
+                HasChangeLog = changeLog != null && changeLog.Items.Any()
             };
 
             return viewModel;

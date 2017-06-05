@@ -239,6 +239,8 @@
     <Compile Include="Analysis\BreakingChangeDetection\PublicMethodModifierDetector.cs" />
     <Compile Include="Analysis\BreakingChangeDetection\PublicConstructorModifierDetector.cs" />
     <Compile Include="Analysis\BreakingChangeDetection\PublicInterfaceModifierDetector.cs" />
+    <Compile Include="Common\SourceControlType.cs" />
+    <Compile Include="Common\SourceControlConnection.cs" />
     <Compile Include="Interfaces\IPublicClassModifierDetector.cs" />
     <Compile Include="Analysis\BreakingChangeDetection\PublicClassModifierDetector.cs" />
     <Compile Include="Analysis\StructureBuilders\InterfaceStructureBuilder.cs" />
@@ -267,6 +269,7 @@
     <Compile Include="Common\SourceControlChangeLogItem.cs" />
     <Compile Include="Interfaces\ISourceControlChangeLog.cs" />
     <Compile Include="Interfaces\ISourceControlChangeLogItem.cs" />
+    <Compile Include="Interfaces\ISourceControlConnection.cs" />
     <Compile Include="Interfaces\ISourceControlCredentials.cs" />
     <Compile Include="Common\SourceControlCredentials.cs" />
     <Compile Include="Common\SubversionSourceControlClient.cs" />

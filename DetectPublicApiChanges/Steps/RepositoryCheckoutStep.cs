@@ -61,16 +61,9 @@ namespace DetectPublicApiChanges.Steps
         {
             ExecuteSafe(() =>
             {
-                SourceControlCredentials credentials = null;
+                var connection = _store.GetItem<ISourceControlConnection>(StoreKeys.RepositoryConnection);
 
-                //Credentials
-                if (!string.IsNullOrEmpty(_options.RepositoryUser) && !string.IsNullOrEmpty(_options.RepositoryPassword))
-                {
-                    credentials = new SourceControlCredentials(_options.RepositoryUser, _options.RepositoryPassword);
-                }
-
-                if (_options.RepositorySourceRevision == default(int) || _options.RepositoryTargetRevision == default(int) ||
-                    string.IsNullOrEmpty(_options.RepositoryUrl))
+                if (connection == null)
                 {
                     _logger.Info("No source control system is used");
                     return;
@@ -80,8 +73,8 @@ namespace DetectPublicApiChanges.Steps
                 var checkoutFolderTarget = new DirectoryInfo(Path.Combine(_store.GetItem<DirectoryInfo>(StoreKeys.WorkPath).FullName, "Target"));
 
                 //Checkout
-                _sourceControlClient.CheckOut(new Uri(_options.RepositoryUrl), checkoutFolderSource, _options.RepositorySourceRevision, credentials);
-                _sourceControlClient.CheckOut(new Uri(_options.RepositoryUrl), checkoutFolderTarget, _options.RepositoryTargetRevision, credentials);
+                _sourceControlClient.CheckOut(new Uri(connection.RepositoryUrl), checkoutFolderSource, connection.StartRevision, connection.Credentials);
+                _sourceControlClient.CheckOut(new Uri(connection.RepositoryUrl), checkoutFolderTarget, connection.EndRevision, connection.Credentials);
 
                 //Set global folders
                 _store.SetOrAddItem(StoreKeys.SolutionPathSource, Path.Combine(checkoutFolderSource.FullName, _options.SolutionPathSource));
@@ -89,10 +82,7 @@ namespace DetectPublicApiChanges.Steps
 
                 //Get Changelog
                 _store.SetOrAddItem(StoreKeys.RepositoryChangeLog,
-                    _sourceControlClient.GetChangeLog(
-                        new Uri(_options.RepositoryUrl),
-                        _options.RepositorySourceRevision,
-                        _options.RepositoryTargetRevision, credentials));
+                    _sourceControlClient.GetChangeLog(new Uri(connection.RepositoryUrl), connection.StartRevision, connection.EndRevision, connection.Credentials));
             });
         }
     }
