@@ -12,7 +12,7 @@ Report
 --------------
 ![sample report](https://cloud.githubusercontent.com/assets/29073072/26785873/c5aa72a4-4a04-11e7-8e63-412f59c5c51a.png)
 
-Running the console application
+Usage
 -------------------------------
 Compile the solution in release mode with at least Visual Studio 2017
 
@@ -49,3 +49,226 @@ The program always create a unique directory inside the work-folder based on a F
     |-- 131411422436050525
 	|-- ...
 ```
+
+### Commandline Parameters
+A selftest is build in and can be invoked by just running the EXE without a parameter:
+> DetectPublicApiChanges.exe
+
+Then the application tests the DetectPublicApiChanges solution itself and should generate a report without any changes, because it does compare the same version. Make sure the EXE is located in the bin folder and the solution is above that.
+
+### Logging
+The application uses log4net for logging. Be aware that using debug causes the logfiles to grow rapidly.
+
+Implementation
+--------------
+### Important Dependencies
+1. [roslyn](https://github.com/dotnet/roslyn)
+2. [SharpSvn](https://sharpsvn.open.collab.net/)
+3. [Command Line Parser Library](https://www.nuget.org/packages/CommandLineParser/1.9.71)
+4. [RazorEngine](https://github.com/Antaris/RazorEngine)
+5. [NetJSON](https://github.com/rpgmaker/NetJSON)
+
+### Subversion Checkout
+As source control client currently subversion is supported. To actually do the checkout just a few lines of code are involved using [SharpSvn](https://sharpsvn.open.collab.net/):
+```csharp
+public void CheckOut(Uri repositoryUrl, DirectoryInfo localFolder, int revision, ISourceControlCredentials credentials = null)
+{
+    using (var client = new SvnClient())
+    {
+        if (credentials != null)
+            client.Authentication.ForceCredentials(credentials.User, credentials.Password);
+
+        client.Authentication.SslServerTrustHandlers += Authentication_SslServerTrustHandlers;
+
+        client.CheckOut(repositoryUrl, localFolder.FullName,
+            new SvnCheckOutArgs() { Revision = new SvnRevision(revision) });
+    }
+}
+```
+
+Also retrieving the changelog from subversion to add it to the report is done straightforward:
+
+```csharp
+public ISourceControlChangeLog GetChangeLog(Uri repositoryUrl, int startRevision, int endRevision,
+    ISourceControlCredentials credentials = null)
+{
+    var log = new SourceControlChangeLog(startRevision, endRevision);
+
+    using (var client = new SvnClient())
+    {
+        if (credentials != null)
+            client.Authentication.ForceCredentials(credentials.User, credentials.Password);
+
+        client.Authentication.SslServerTrustHandlers += Authentication_SslServerTrustHandlers;
+
+        client.Log(
+            repositoryUrl,
+            new SvnLogArgs
+            {
+                Range = new SvnRevisionRange(startRevision, endRevision)
+            },
+            (o, e) =>
+            {
+                log.AddItem(new SourceControlChangeLogItem(e.Author, e.LogMessage, e.Time));
+            });
+    }
+
+    return log;
+}
+```
+
+### Roslyn syntax tree analysis
+Basically [roslyn](https://github.com/dotnet/roslyn) divides the analysis in syntax and semantic analysis. As in the documentation of [roslyn](https://github.com/dotnet/roslyn) outlined: 'Syntax trees are the primary structure used for compilation, code analysis, binding, refactoring, IDE features, and code generation'. This model is used to analyze the source code of the given solution.
+
+The structure looks like this:
+```
+|-- Workspace
+    |-- Solution
+        |-- Project
+          |-- Document
+            |--SyntaxTree
+              |--SyntaxNode Root
+                |--SyntaxNode
+                ...
+        |-- Project
+		|-- ...
+```
+
+Below the basic C# code to read the solution file is descibed. It is also possible to directly analyse C# via a string, which is usefull for unit tests.
+
+#### Get all syntax nodes
+The basic C# code to go over all projects in a solution, load the document and then get the syntax tree looks like this. It analyzes every class by filtering with
+
+> `OfType<ClassDeclarationSyntax>()`
+
+and retrieves the name and the fullnamespace.
+
+```csharp
+private void AnalyzeSyntaxTree(string solutionPath)
+{
+    //Solution
+    var solution = WorkspaceHelper.GetSolution(solutionPath);
+    solution.Wait();
+
+    //Project
+    foreach (var projectId in solution.Result.ProjectIds)
+    {
+        var project = solution.Result.GetProject(projectId);
+
+        //Document
+        foreach (var documentId in project.DocumentIds)
+        {
+            var document = solution.Result.GetDocument(documentId);
+            if (document.SupportsSyntaxTree)
+            {
+                //Syntax Tree
+                var syntaxTree = document.GetSyntaxTreeAsync().Result;
+
+                //Syntax Node
+                var syntaxNode = tree?.GetRoot();
+
+                //.. Analyze the syntax tree and get Name and Fullname of every class
+                var classItems = syntaxNode.DescendantNodes().OfType<ClassDeclarationSyntax>()
+                  .Select(
+                    c => new {
+                      Name = c.GetName(),
+                      FullNameSpace = c.GetFullName()});
+
+                var interfaceItems = syntaxNode.DescendantNodes().OfType<InterfaceDeclarationSyntax>();
+
+                //.. get modifiers, ctor, properties etc
+            }
+        }
+    }
+}
+
+public static string GetName(this ClassDeclarationSyntax syntax)
+{
+    return syntax.Identifier.ValueText;
+}
+
+public static string GetFullName(this ClassDeclarationSyntax syntax)
+{
+    NamespaceDeclarationSyntax namespaceDeclarationSyntax = null;
+    if (!SyntaxNodeHelper.TryGetParentSyntax(syntax, out namespaceDeclarationSyntax))
+        return string.Empty;
+
+    var namespaceName = namespaceDeclarationSyntax.Name.ToString();
+    var fullClassName = namespaceName + "." + syntax.Identifier;
+
+    return fullClassName;
+}
+```
+#### Retrieve information about modifiers, contructors, properties or methods
+
+Now that we have the complete syntax tree loaded, we can iterate over every syntax node, cast it to e.g. a `ClassDeclarationSyntax` and get more information:
+
+```csharp
+public static IEnumerable<ConstructorDeclarationSyntax> GetConstructors(this ClassDeclarationSyntax syntax)
+{
+  var ctors = syntax
+      .ChildNodes()
+      .OfType<ConstructorDeclarationSyntax>();
+
+  return ctors;
+}
+
+public static IEnumerable<MethodDeclarationSyntax> GetMethods(this ClassDeclarationSyntax syntax)
+{
+    var methods = syntax
+        .ChildNodes()
+        .OfType<MethodDeclarationSyntax>();
+
+    return methods;
+}
+
+public static IEnumerable<PropertyDeclarationSyntax> GetProperties(this ClassDeclarationSyntax syntax)
+{
+    var properties = syntax
+        .ChildNodes()
+        .OfType<PropertyDeclarationSyntax>();
+
+    return properties;
+}
+```
+
+A `MethodDeclarationSyntax` then contains for example the modifiers and parameters. That helps us to search for this combination in the target solution.
+
+
+### Create index and compare
+
+The application DetectPublicApiChanges does a simple index kex comparison in the basic version. The unique key for a class and an interface is determined just by the full name space including the class or interface name. For a method, property or a contructor the return-type, the structure-name and the parameters (type and name) are included in the key.
+
+Here is an example of how an key for a method:
+
+```csharp
+public string CreateIndexKey(MethodDeclarationSyntax syntax, ClassDeclarationSyntax parent)
+{
+    var parentNameSpace = string.Empty;
+    if (parent != null)
+        parentNameSpace = parent.GetFullName();
+
+    var key = new StringBuilder(parentNameSpace);
+
+    key.Append(syntax.ReturnType);
+    key.Append(syntax.Identifier.Text);
+
+    foreach (var param in syntax.GetParameters())
+    {
+        key.Append(param.Identifier.Text);
+        key.Append(param.Type);
+    }
+
+    foreach (var param in syntax.Modifiers)
+    {
+        key.Append(param.ValueText);
+    }
+
+    return key.ToString();
+}
+```
+
+We then add all of these keys to 2 different indexes, then we compare, but first of all we only recognize structures which contains a public modifier. Every key which cannot be found in the target index can be considered as a breaking change.
+
+### Using MVC Razor templates to generate report
+The report is created using razor templates utilizing the [RazorEngine](https://github.com/Antaris/RazorEngine).
