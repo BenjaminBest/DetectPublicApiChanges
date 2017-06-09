@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using DetectPublicApiChanges.Interfaces;
+﻿using DetectPublicApiChanges.Interfaces;
 using log4net;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DetectPublicApiChanges.Analysis.StructureIndexers
 {

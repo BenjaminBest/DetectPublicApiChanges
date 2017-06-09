@@ -30,6 +30,14 @@
         string Job { get; set; }
 
         /// <summary>
+        /// Gets or sets the regex filter.
+        /// </summary>
+        /// <value>
+        /// The regex filter.
+        /// </value>
+        string RegexFilter { get; set; }
+
+        /// <summary>
         /// Gets or sets the repository connection string.
         /// </summary>
         /// <value>

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using DetectPublicApiChanges.Analysis.Filters;
 using DetectPublicApiChanges.Analysis.Roslyn;
 using DetectPublicApiChanges.Analysis.Structures;
 using DetectPublicApiChanges.Common;
@@ -7,6 +6,8 @@ using DetectPublicApiChanges.Extensions;
 using DetectPublicApiChanges.Interfaces;
 using log4net;
 using Microsoft.CodeAnalysis;
+using System.Collections.Generic;
+using System.IO;
 
 namespace DetectPublicApiChanges.Steps
 {
@@ -92,15 +93,13 @@ namespace DetectPublicApiChanges.Steps
             //Create solution
             var solutionInfo = new SolutionStructure(GetSolutionName(solution.Result.FilePath), solutionPath).Log();
 
-            foreach (var projectId in solution.Result.ProjectIds)
+            foreach (var project in solution.Result.Projects.Filter(_options.RegexFilter))
             {
-                var projectInfo = solution.Result.GetProject(projectId);
-
                 //Add project
-                var project = new ProjectStructure(projectInfo.Name).Log();
-                solutionInfo.AddProject(project);
+                var projectInfo = new ProjectStructure(project.Name).Log();
+                solutionInfo.AddProject(projectInfo);
 
-                foreach (var documentId in projectInfo.DocumentIds)
+                foreach (var documentId in project.DocumentIds)
                 {
                     var document = solution.Result.GetDocument(documentId);
                     if (document.SupportsSyntaxTree)
@@ -109,10 +108,10 @@ namespace DetectPublicApiChanges.Steps
                         var syntaxTree = document.GetSyntaxTreeAsync().Result;
 
                         //Classes
-                        project.AddClasses(_classRootTypeStructureBuilder.Build(syntaxTree));
+                        projectInfo.AddClasses(_classRootTypeStructureBuilder.Build(syntaxTree));
 
                         //Interfaces
-                        project.AddInterfaces(_interfaceRootTypeStructureBuilder.Build(syntaxTree));
+                        projectInfo.AddInterfaces(_interfaceRootTypeStructureBuilder.Build(syntaxTree));
                     }
                 }
             }

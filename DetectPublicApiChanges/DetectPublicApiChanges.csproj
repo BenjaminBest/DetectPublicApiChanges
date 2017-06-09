@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DetectPublicApiChanges</RootNamespace>
     <AssemblyName>DetectPublicApiChanges</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -239,6 +240,7 @@
     <Compile Include="Analysis\BreakingChangeDetection\PublicMethodModifierDetector.cs" />
     <Compile Include="Analysis\BreakingChangeDetection\PublicConstructorModifierDetector.cs" />
     <Compile Include="Analysis\BreakingChangeDetection\PublicInterfaceModifierDetector.cs" />
+    <Compile Include="Analysis\Filters\ProjectRegexFilter.cs" />
     <Compile Include="Common\SourceControlType.cs" />
     <Compile Include="Common\SourceControlConnection.cs" />
     <Compile Include="Interfaces\IPublicClassModifierDetector.cs" />

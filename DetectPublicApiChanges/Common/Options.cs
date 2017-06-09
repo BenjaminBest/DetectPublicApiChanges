@@ -38,6 +38,15 @@ namespace DetectPublicApiChanges.Common
         public string Job { get; set; }
 
         /// <summary>
+        /// Gets or sets the regex filter.
+        /// </summary>
+        /// <value>
+        /// The regex filter.
+        /// </value>
+        [Option("regexFilter", HelpText = "Filter applied on the namepace/name of projects, classes and interfaces to filter. Matching structures will not analyzed.")]
+        public string RegexFilter { get; set; }
+
+        /// <summary>
         /// Gets or sets the repository connection string.
         /// </summary>
         /// <value>
