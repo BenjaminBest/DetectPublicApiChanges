@@ -10,16 +10,6 @@ namespace DetectPublicApiChanges.Analysis.Roslyn
     public static class InterfaceDeclarationSyntaxExtensions
     {
         /// <summary>
-        /// Gets the identifier.
-        /// </summary>
-        /// <param name="syntax">The syntax.</param>
-        /// <returns></returns>
-        public static string GetId(this InterfaceDeclarationSyntax syntax)
-        {
-            return syntax.Identifier.ValueText;
-        }
-
-        /// <summary>
         /// Gets the name.
         /// </summary>
         /// <param name="syntax">The syntax.</param>

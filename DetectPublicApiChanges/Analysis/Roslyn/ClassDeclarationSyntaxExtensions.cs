@@ -36,7 +36,7 @@ namespace DetectPublicApiChanges.Analysis.Roslyn
         /// <returns></returns>
         public static string GetFullName(this ClassDeclarationSyntax syntax)
         {
-            NamespaceDeclarationSyntax namespaceDeclarationSyntax = null;
+            NamespaceDeclarationSyntax namespaceDeclarationSyntax;
             if (!SyntaxNodeHelper.TryGetParentSyntax(syntax, out namespaceDeclarationSyntax))
                 return string.Empty;
 

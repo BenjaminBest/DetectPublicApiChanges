@@ -1,17 +1,19 @@
-﻿namespace DetectPublicApiChanges.Interfaces
+﻿using Microsoft.CodeAnalysis;
+
+namespace DetectPublicApiChanges.Interfaces
 {
     /// <summary>
-    /// The interface IPublicModifierDetector detects if the structure is public
+    /// The interface IPublicModifierDetector detects if the structure is public and should be analyzing for change detection
     /// </summary>
     public interface IPublicModifierDetector
     {
         /// <summary>
         /// Determines whether the specified structure is public.
         /// </summary>
-        /// <param name="structure">The structure.</param>
+        /// <param name="syntaxNode">The syntax node.</param>
         /// <returns>
         ///   <c>true</c> if the specified structure is public; otherwise, <c>false</c>.
         /// </returns>
-        bool IsPublic(IStructure structure);
+        bool IsPublic(SyntaxNode syntaxNode);
     }
 }

@@ -1,9 +1,11 @@
-﻿namespace DetectPublicApiChanges.Interfaces
+﻿using Microsoft.CodeAnalysis;
+
+namespace DetectPublicApiChanges.Interfaces
 {
     /// <summary>
-    /// The interface IStructureIndexItem defines an item to hold a structure and some id to identify
+    /// The interface IIndexItem defines an item to hold a syntax node and some id to identify
     /// </summary>
-    public interface IStructureIndexItem
+    public interface IIndexItem
     {
         /// <summary>
         /// Gets or sets the key.
@@ -14,19 +16,19 @@
         string Key { get; }
 
         /// <summary>
-        /// Gets or sets the structure.
+        /// Gets or sets the syntax node.
         /// </summary>
         /// <value>
-        /// The structure.
+        /// The syntax node.
         /// </value>
-        IStructure Structure { get; }
+        SyntaxNode SyntaxNode { get; }
 
         /// <summary>
-        /// Gets or sets the parent.
+        /// Gets the project of the SyntaxNode.
         /// </summary>
         /// <value>
-        /// The parent.
+        /// The project.
         /// </value>
-        IStructure Parent { get; }
+        Project Project { get; set; }
     }
 }

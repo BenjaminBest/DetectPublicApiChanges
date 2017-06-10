@@ -1,13 +1,11 @@
-﻿using DetectPublicApiChanges.Analysis.Filters;
+﻿using System.Collections.Generic;
+using DetectPublicApiChanges.Analysis.Filters;
 using DetectPublicApiChanges.Analysis.Roslyn;
-using DetectPublicApiChanges.Analysis.Structures;
+using DetectPublicApiChanges.Analysis.StructureIndex;
 using DetectPublicApiChanges.Common;
-using DetectPublicApiChanges.Extensions;
 using DetectPublicApiChanges.Interfaces;
 using log4net;
 using Microsoft.CodeAnalysis;
-using System.Collections.Generic;
-using System.IO;
 
 namespace DetectPublicApiChanges.Steps
 {
@@ -19,6 +17,11 @@ namespace DetectPublicApiChanges.Steps
     public class AnalyzeDocumentTreeStep : StepBase<AnalyzeDocumentTreeStep>, IStep
     {
         /// <summary>
+        /// The logger
+        /// </summary>
+        private readonly ILog _logger;
+
+        /// <summary>
         /// The store
         /// </summary>
         private readonly IStore _store;
@@ -29,14 +32,9 @@ namespace DetectPublicApiChanges.Steps
         private readonly IOptions _options;
 
         /// <summary>
-        /// The class root type structure builder
+        /// The syntax node analyzers
         /// </summary>
-        private readonly IRootTypeStructureBuilder<SyntaxTree, ClassStructure> _classRootTypeStructureBuilder;
-
-        /// <summary>
-        /// The interface root type structure builder
-        /// </summary>
-        private readonly IRootTypeStructureBuilder<SyntaxTree, InterfaceStructure> _interfaceRootTypeStructureBuilder;
+        private readonly ISyntaxNodeAnalyzerRepository _syntaxNodeRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AnalyzeDocumentTreeStep" /> class.
@@ -44,20 +42,18 @@ namespace DetectPublicApiChanges.Steps
         /// <param name="logger">The logger.</param>
         /// <param name="store">The store.</param>
         /// <param name="options">The options.</param>
-        /// <param name="classRootTypeStructureBuilder">The class root type structure builder.</param>
-        /// <param name="interfaceRootTypeStructureBuilder">The interface root type structure builder.</param>
+        /// <param name="syntaxNodeRepository">The syntax node repository.</param>
         public AnalyzeDocumentTreeStep(
             ILog logger,
             IStore store,
             IOptions options,
-            IRootTypeStructureBuilder<SyntaxTree, ClassStructure> classRootTypeStructureBuilder,
-            IRootTypeStructureBuilder<SyntaxTree, InterfaceStructure> interfaceRootTypeStructureBuilder)
+            ISyntaxNodeAnalyzerRepository syntaxNodeRepository)
             : base(logger)
         {
+            _logger = logger;
             _store = store;
             _options = options;
-            _classRootTypeStructureBuilder = classRootTypeStructureBuilder;
-            _interfaceRootTypeStructureBuilder = interfaceRootTypeStructureBuilder;
+            _syntaxNodeRepository = syntaxNodeRepository;
         }
 
         /// <summary>
@@ -67,37 +63,41 @@ namespace DetectPublicApiChanges.Steps
         {
             ExecuteSafe(() =>
             {
-                var solutions = new List<SolutionStructure>
+                var sourceStructureIndex = new StructureIndex(_logger);
+                var targetStructureIndex = new StructureIndex(_logger);
+
+                var solutions = new List<Solution>
                 {
-                    GetSolution(_store.GetItem<string>(StoreKeys.SolutionPathSource)),
-                    GetSolution(_store.GetItem<string>(StoreKeys.SolutionPathTarget))
+                    GetSolutionAndCreateIndex(_store.GetItem<string>(StoreKeys.SolutionPathSource),sourceStructureIndex),
+                    GetSolutionAndCreateIndex(_store.GetItem<string>(StoreKeys.SolutionPathTarget),targetStructureIndex)
                 };
 
                 _store.SetOrAddItem(StoreKeys.Solutions, solutions);
+                _store.SetOrAddItem(StoreKeys.SolutionIndexSource, sourceStructureIndex);
+                _store.SetOrAddItem(StoreKeys.SolutionIndexTarget, targetStructureIndex);
             });
         }
 
         /// <summary>
-        /// Gets the solution.
+        /// Gets the solution syntax tree and creates the index
         /// </summary>
         /// <param name="solutionPath">The solution path.</param>
+        /// <param name="index">The index.</param>
         /// <returns></returns>
-        private SolutionStructure GetSolution(string solutionPath)
+        private Solution GetSolutionAndCreateIndex(string solutionPath, IStructureIndex index)
         {
             var solution = WorkspaceHelper.GetSolution(solutionPath);
             var projects = WorkspaceHelper.GetProjects(solutionPath);
             projects.Wait();
             solution.Wait();
 
-
-            //Create solution
-            var solutionInfo = new SolutionStructure(GetSolutionName(solution.Result.FilePath), solutionPath).Log();
+            solution.Result.Log();
 
             foreach (var project in solution.Result.Projects.Filter(_options.RegexFilter))
             {
-                //Add project
-                var projectInfo = new ProjectStructure(project.Name).Log();
-                solutionInfo.AddProject(projectInfo);
+                _logger.Info($"Analyzing project '{project.Name}'");
+
+                project.Log();
 
                 foreach (var documentId in project.DocumentIds)
                 {
@@ -107,32 +107,30 @@ namespace DetectPublicApiChanges.Steps
                         //Syntax Tree
                         var syntaxTree = document.GetSyntaxTreeAsync().Result;
 
-                        //Classes
-                        projectInfo.AddClasses(_classRootTypeStructureBuilder.Build(syntaxTree));
+                        var syntaxNode = syntaxTree?.GetRoot();
 
-                        //Interfaces
-                        projectInfo.AddInterfaces(_interfaceRootTypeStructureBuilder.Build(syntaxTree));
+                        if (syntaxNode == null)
+                            continue;
+
+                        var items = syntaxNode.DescendantNodesAndSelf();
+
+                        foreach (var item in items)
+                        {
+                            if (_syntaxNodeRepository.IsSyntaxDeclarationTypeSupported(item))
+                            {
+                                var indexItem = _syntaxNodeRepository.Analyze(item);
+                                indexItem.Project = project;
+
+                                index.AddOrUpdateItem(indexItem);
+                            }
+                        }
                     }
                 }
             }
 
-            return solutionInfo;
-        }
+            _logger.Info($"Index now has {index.Items.Count} items");
 
-        /// <summary>
-        /// Gets the name of the solution.
-        /// </summary>
-        /// <param name="solutionPath">The solution path.</param>
-        /// <returns></returns>
-        /// <exception cref="FileNotFoundException"></exception>
-        private static string GetSolutionName(string solutionPath)
-        {
-            var file = new FileInfo(solutionPath);
-
-            if (!file.Exists)
-                throw new FileNotFoundException($"The solution file {solutionPath} does not exits");
-
-            return file.Name;
+            return solution.Result;
         }
     }
 }

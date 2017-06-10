@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
+using DetectPublicApiChanges.Analysis.Roslyn;
 using DetectPublicApiChanges.Common;
-using DetectPublicApiChanges.Extensions;
 using DetectPublicApiChanges.Interfaces;
 using log4net;
 

@@ -13,13 +13,13 @@ namespace DetectPublicApiChanges.Interfaces
         /// <value>
         /// The items.
         /// </value>
-        IReadOnlyDictionary<string, IStructureIndexItem> Items { get; }
+        IReadOnlyDictionary<string, IIndexItem> Items { get; }
 
         /// <summary>
         /// Adds the or update item.
         /// </summary>
         /// <param name="item">The item.</param>
-        void AddOrUpdateItem(IStructureIndexItem item);
+        void AddOrUpdateItem(IIndexItem item);
 
         /// <summary>
         /// Existses the specified key.

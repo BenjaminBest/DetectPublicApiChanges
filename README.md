@@ -139,6 +139,24 @@ The structure looks like this:
 		|-- ...
 ```
 
+For the basic comparison of public members these [roslyn](https://github.com/dotnet/roslyn)  classes are used:
+```
+|-- SyntaxNode
+    |-- MemberDeclarationSyntax
+        |-- BaseMethodDeclarationSyntax
+          |-- MemberDeclarationSyntax
+          |-- ConstructorDeclarationSyntax
+        |-- BaseTypeDeclarationSyntax
+                |-- TypeDeclarationSyntax
+                  |-- ClassDeclarationSyntax
+                  |-- InterfaceDeclarationSyntax
+                  |-- StructDeclarationSyntax
+        |-- BasePropertyDeclarationSyntax
+          |-- PropertyDeclarationSyntax
+```
+
+The most generic type which can be used it the `SyntaxNode`.
+
 Below the basic C# code to read the solution file is described. It is also possible to directly analyze C# via a string, which is useful for unit tests.
 
 #### Get all syntax nodes

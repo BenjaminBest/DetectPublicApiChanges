@@ -29,6 +29,6 @@ namespace DetectPublicApiChanges.Interfaces
         /// <value>
         /// The differences.
         /// </value>
-        IReadOnlyList<IStructureIndexItem> Differences { get; }
+        IReadOnlyList<IIndexItem> Differences { get; }
     }
 }

@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using DetectPublicApiChanges.Analysis.Structures;
+using DetectPublicApiChanges.Analysis.Roslyn;
 using DetectPublicApiChanges.Interfaces;
 using DetectPublicApiChanges.Report.Models;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace DetectPublicApiChanges.Report
 {
@@ -56,7 +59,7 @@ namespace DetectPublicApiChanges.Report
         /// Creates the navigation.
         /// </summary>
         /// <param name="details">The details.</param>
-        /// <param name="result">The result.</param>
+        /// <param name="indexComparison">The index comparison.</param>
         /// <returns></returns>
         protected IEnumerable<NavigationViewModel> CreateNavigation(IEnumerable<DetailViewModel> details, IStructureIndexComparisonResult indexComparison)
         {
@@ -69,16 +72,16 @@ namespace DetectPublicApiChanges.Report
             navigation.Add(defaultMenu);
 
             //Projects
-            var projects = new NavigationViewModel("Projects", GenerateAnchor("Projects"))
+            var projectList = new NavigationViewModel("Projects", GenerateAnchor("Projects"))
             {
-                Items = indexComparison.Differences.Where(d => d.Parent is ProjectStructure)
-                    .Select(d => d.Parent as ProjectStructure)
+                Items = indexComparison.Differences
+                    .Select(d => d.Project)
                     .GroupBy(d => d.Name)
                     .Select(d => new NavigationViewModel(d.Key, GenerateAnchor(d.Key))).ToList()
             };
-            projects.Count = projects.Items.Count;
+            projectList.Count = projectList.Items.Count;
 
-            navigation.Add(projects);
+            navigation.Add(projectList);
 
             //Classes
             var classes = new NavigationViewModel("Classes", GenerateAnchor("Classes"))
@@ -116,101 +119,106 @@ namespace DetectPublicApiChanges.Report
             {
                 DetailViewModel detail = null;
 
-                if (diff.Parent.GetType() == typeof(ProjectStructure))
+                //Class
+                if (diff.SyntaxNode.IsKind(SyntaxKind.ClassDeclaration))
                 {
-                    var @class = diff.Structure as ClassStructure;
+                    var @class = diff.SyntaxNode as ClassDeclarationSyntax;
 
-                    //Class
                     if (@class != null)
                     {
 
-                        if (!details.ContainsKey(@class.FullName))
+                        if (!details.ContainsKey(@class.GetFullName()))
                         {
-                            detail = CreateDetailItem(@class.Name, @class.FullName, GenerateAnchor(@class.FullName), "Class");
-                            details.Add(@class.FullName, detail);
+                            detail = CreateDetailItem(@class.Identifier.ValueText, @class.GetFullName(),
+                                GenerateAnchor(@class.GetFullName()), "Class");
+                            details.Add(@class.GetFullName(), detail);
                         }
                         else
                         {
-                            detail = details[@class.FullName];
+                            detail = details[@class.GetFullName()];
                         }
 
                         detail.Tags.Add("Class");
-                        detail.Content.Add($"The class {@class.Name} itself seems to be changed or removed");
-                    }
-
-                    var @interface = diff.Structure as InterfaceStructure;
-
-                    //Interface
-                    if (@interface != null)
-                    {
-
-                        if (!details.ContainsKey(@interface.FullName))
-                        {
-                            detail = CreateDetailItem(@interface.Name, @interface.FullName, GenerateAnchor(@interface.FullName), "Interface");
-                            details.Add(@interface.FullName, detail);
-                        }
-                        else
-                        {
-                            detail = details[@interface.FullName];
-                        }
-
-                        detail.Tags.Add("Interface");
-                        detail.Content.Add($"The interface {@interface.Name} itself seems to be changed or removed");
+                        detail.Content.Add(
+                            $"The class {@class.Identifier.ValueText} itself seems to be changed or removed");
                     }
                 }
 
-                var parentClass = diff.Parent as ClassStructure;
+                //Interface
+                if (diff.SyntaxNode.IsKind(SyntaxKind.InterfaceDeclaration))
+                {
+                    var @interface = diff.SyntaxNode as InterfaceDeclarationSyntax;
+
+                    if (@interface != null)
+                    {
+
+                        if (!details.ContainsKey(@interface.GetFullName()))
+                        {
+                            detail = CreateDetailItem(@interface.Identifier.ValueText, @interface.GetFullName(), GenerateAnchor(@interface.GetFullName()), "Interface");
+                            details.Add(@interface.GetFullName(), detail);
+                        }
+                        else
+                        {
+                            detail = details[@interface.GetFullName()];
+                        }
+
+                        detail.Tags.Add("Interface");
+                        detail.Content.Add($"The interface {@interface.Identifier.ValueText} itself seems to be changed or removed");
+                    }
+                }
+
+                var parentClass = diff.SyntaxNode.Parent as ClassDeclarationSyntax;
 
                 //Class as parent
                 if (parentClass != null)
                 {
-                    if (!details.ContainsKey(parentClass.FullName))
+                    if (!details.ContainsKey(parentClass.GetFullName()))
                     {
-                        detail = CreateDetailItem(parentClass.Name, parentClass.FullName, GenerateAnchor(parentClass.FullName), "Class");
-                        details.Add(parentClass.FullName, detail);
+                        detail = CreateDetailItem(parentClass.Identifier.ValueText, parentClass.GetFullName(), GenerateAnchor(parentClass.GetFullName()), "Class");
+                        details.Add(parentClass.GetFullName(), detail);
                     }
                     else
                     {
-                        detail = details[parentClass.FullName];
+                        detail = details[parentClass.GetFullName()];
                     }
                 }
 
                 //Interface as parent
-                var parentInterface = diff.Parent as InterfaceStructure;
+                var parentInterface = diff.SyntaxNode.Parent as InterfaceDeclarationSyntax;
 
                 if (parentInterface != null)
                 {
-                    if (!details.ContainsKey(parentInterface.FullName))
+                    if (!details.ContainsKey(parentInterface.GetFullName()))
                     {
-                        detail = CreateDetailItem(parentInterface.Name, parentInterface.FullName, GenerateAnchor(parentInterface.FullName), "Interface");
-                        details.Add(parentInterface.FullName, detail);
+                        detail = CreateDetailItem(parentInterface.Identifier.ValueText, parentInterface.GetFullName(), GenerateAnchor(parentInterface.GetFullName()), "Interface");
+                        details.Add(parentInterface.GetFullName(), detail);
                     }
                     else
                     {
-                        detail = details[parentInterface.FullName];
+                        detail = details[parentInterface.GetFullName()];
                     }
                 }
 
                 //Add information
-                var method = diff.Structure as MethodStructure;
+                var method = diff.SyntaxNode as MethodDeclarationSyntax;
                 if (method != null)
                 {
                     detail.Tags.Add("Method");
-                    detail.Content.Add($"The Method {method.Name} seems to be changed or removed");
+                    detail.Content.Add($"The Method {method.Identifier.ValueText} seems to be changed or removed");
                 }
 
-                var ctor = diff.Structure as ConstructorStructure;
+                var ctor = diff.SyntaxNode as ConstructorDeclarationSyntax;
                 if (ctor != null)
                 {
                     detail.Tags.Add("Constructor");
                     detail.Content.Add("The Constructor seems to be changed or removed");
                 }
 
-                var property = diff.Structure as PropertyStructure;
+                var property = diff.SyntaxNode as PropertyDeclarationSyntax;
                 if (property != null)
                 {
                     detail.Tags.Add("Property");
-                    detail.Content.Add($"The Property {property.Name} seems to be changed or removed");
+                    detail.Content.Add($"The Property {property.Identifier.ValueText} seems to be changed or removed");
                 }
             }
 
