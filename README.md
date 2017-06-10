@@ -1,8 +1,8 @@
-Detect public API changes with roslyn
+Detect public API changes with Roslyn
 =====================================
-This repository contains a console application which can be used to compare two visual studio solutions with [roslyn](https://github.com/dotnet/roslyn) using the SyntaxTree. The program supports two modi, the first one is just using existent folders to read the solution file from. The second mode supports SVN via [SharpSvn](https://sharpsvn.open.collab.net/) and automatically checkout's two revisions which then are used for comparison.
+This repository contains a console application which can be used to compare two visual studio solutions with [roslyn](https://github.com/dotnet/roslyn) using the Syntax Tree. The program supports two modes, the first one is just using existent folders to read the solution file from. The second mode supports SVN via [SharpSvn](https://sharpsvn.open.collab.net/) and automatically checkout's two revisions which then are used for comparison.
 
-Based on the information gathered with the SyntaxTree an index for every solution is created which contains unique keys for every structure (class, interface, constructor, methods or property) including parameter and return-types, names and modifiers.
+Based on the information gathered with the Syntax Tree an index for every solution is created which contains unique keys for every structure (class, interface, constructor, methods or property) including parameter and return-types, names and modifiers.
 
 With the generated index the differences between two visual studio solutions can be found easily, because if a source-key does not exist in the target-index then it has obviously been changed or is missing.
 
@@ -20,7 +20,7 @@ Compile the solution in release mode with at least Visual Studio 2017
 In a CMD window start the application by using parameters for the source control connection (svn), the solutions which should be analyzed. The program automatically creates a output directory.
 > DetectPublicApiChanges.exe --repositoryConnectionString "Svn;https://XYZ/svn/DetectPublicApiChanges/trunk;20;28;user;password" --solutionPathSource "DetectPublicApiChanges\DetectPublicApiChanges.sln" --solutionPathTarget "DetectPublicApiChanges\DetectPublicApiChanges.sln"
 
-So a connection string is defined by 4 to 6 parts: `SourceControlSystem;URL;StartRevision;EndRevision;User;Password`, whereas user and password are optional. Currently SourceControlSystem must be `Svn`. The checkout is done to folders inside the working folder which is located relative to the application and it's per defaul named "Work". The folders which contains the revisions are named "Source" and "Target".
+So a connection string is defined by 4 to 6 parts: `SourceControlSystem;URL;StartRevision;EndRevision;User;Password`, whereas user and password are optional. Currently SourceControlSystem must be `Svn`. The checkout is done to folders inside the working folder which is located relative to the application and it's per default named "Work". The folders which contains the revisions are named "Source" and "Target".
 
 ### Using normal local folders
 For local folders the syntax easier.
@@ -34,7 +34,7 @@ this can be changed, also a relative path can be used
 
 > --workPath "..\SomeRelativePath"
 
-The program always create a unique directory inside the work-folder based on a FileTime-stamp,e.g: `131411407331414512`. The folder structure looks like this:
+The program always create a unique directory inside the work-folder based on a filetime-stamp,e.g: `131411407331414512`. The folder structure looks like this:
 ```
 |-- Work
     |-- 131411407331414512
@@ -51,13 +51,18 @@ The program always create a unique directory inside the work-folder based on a F
 ```
 
 ### Commandline Parameters
-A selftest is build in and can be invoked by just running the EXE without a parameter:
+A self test is build in and can be invoked by just running the EXE without a parameter:
 > DetectPublicApiChanges.exe
 
 Then the application tests the DetectPublicApiChanges solution itself and should generate a report without any changes, because it does compare the same version. Make sure the EXE is located in the bin folder and the solution is above that.
 
+Most likely unit test projects should not be recognized in the change detection process, therefore a regex filter exists. With the option
+> --regexFilter "/.Tests"
+
+a regex filter can be defined which filters all projects out that **matches**. The regex is analyzed in a non case sensitive way.
+
 ### Logging
-The application uses log4net for logging. Be aware that using debug causes the logfiles to grow rapidly.
+The application uses log4net for logging. Be aware that using debug causes the log files to grow rapidly.
 
 Implementation
 --------------
@@ -134,7 +139,7 @@ The structure looks like this:
 		|-- ...
 ```
 
-Below the basic C# code to read the solution file is descibed. It is also possible to directly analyse C# via a string, which is usefull for unit tests.
+Below the basic C# code to read the solution file is described. It is also possible to directly analyze C# via a string, which is useful for unit tests.
 
 #### Get all syntax nodes
 The basic C# code to go over all projects in a solution, load the document and then get the syntax tree looks like this. It analyzes every class by filtering with
@@ -237,7 +242,7 @@ A `MethodDeclarationSyntax` then contains for example the modifiers and paramete
 
 ### Create index and compare
 
-The application DetectPublicApiChanges does a simple index kex comparison in the basic version. The unique key for a class and an interface is determined just by the full name space including the class or interface name. For a method, property or a contructor the return-type, the structure-name and the parameters (type and name) are included in the key.
+The application DetectPublicApiChanges does a simple index key comparison in the basic version. The unique key for a class and an interface is determined just by the full name space including the class or interface name. For a method, property or a constructor the return-type, the structure-name and the parameters (type and name) are included in the key.
 
 Here is an example of how an key for a method:
 

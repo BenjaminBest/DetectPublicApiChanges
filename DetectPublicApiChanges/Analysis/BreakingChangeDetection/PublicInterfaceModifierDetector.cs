@@ -20,7 +20,7 @@ namespace DetectPublicApiChanges.Analysis.BreakingChangeDetection
         {
             var item = structure as InterfaceStructure;
 
-            return item != null && item.Modifiers.Any(m => m.Name.ToLower().Equals("public"));
+            return item != null && item.Modifiers.Any(m => m.Name.ToLower().Equals("public") || m.Name.ToLower().Equals("protected"));
         }
     }
 }

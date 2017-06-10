@@ -100,11 +100,6 @@ namespace DetectPublicApiChanges.Report
 
             navigation.Add(interfaces);
 
-            //Misc
-            var miscMenu = new NavigationViewModel("Miscellaneous", GenerateAnchor("Miscellaneous"));
-            miscMenu.Items.Add(new NavigationViewModel("Obsolete items", GenerateAnchor("Obsolete items")));
-            navigation.Add(miscMenu);
-
             return navigation;
         }
 
