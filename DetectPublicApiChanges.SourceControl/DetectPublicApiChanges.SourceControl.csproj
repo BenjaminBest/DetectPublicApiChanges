@@ -67,7 +67,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Common\SubversionChangeLog.cs" />
     <Compile Include="Common\SourceControlChangeLogItem.cs" />
-    <Compile Include="Common\SourceControlConnection.cs" />
+    <Compile Include="Common\SourceControlConfiguration.cs" />
     <Compile Include="Common\SourceControlCredentials.cs" />
     <Compile Include="Subversion\SubversionSourceControlClient.cs" />
   </ItemGroup>

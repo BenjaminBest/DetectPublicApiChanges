@@ -1,7 +1,7 @@
 ﻿using System;
 using DetectPublicApiChanges.SourceControl.Interfaces;
 
-namespace DetectPublicApiChanges.SourceControl.Subversion
+namespace DetectPublicApiChanges.SourceControl.Common
 {
     /// <summary>
     /// SourceControlChangeLogItem defines one log item for a changelog
