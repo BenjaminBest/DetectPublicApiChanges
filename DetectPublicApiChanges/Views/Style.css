@@ -3,7 +3,6 @@
     display: flex;
     -webkit-flex-flow: row wrap;
     flex-flow: row wrap;
-    text-align: center;
 }
 
     .flex-container > * {
@@ -79,13 +78,25 @@ header {
 }
 
 .detail-column {
-    width: 66.66667%;
-    float: left;
 }
 
 .tag-column {
     float: right;
-    width: 25%;
+}
+
+.toggle-close {
+    height: 0px;
+    overflow: hidden;
+}
+
+.toggle-open {
+    height: auto;
+}
+
+.column-header {
+    width: 100%;
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
 }
 
 .details {
@@ -94,6 +105,11 @@ header {
 
 .detail-title {
     text-align: left;
+    display: inline-block;
+}
+
+.detail-subtitle {
+    text-align: left;
 }
 
 .detail-group-name {
@@ -101,9 +117,12 @@ header {
     margin-right: 0.5rem;
 }
 
-.detail-information table {
-    text-align: left;
+.detail-information {
 }
+
+    .detail-information table {
+        text-align: left;
+    }
 
 .changelogItem {
     font-size: 0.666rem;
@@ -156,8 +175,7 @@ footer {
         color: #1cc7ff;
     }
 
-.row .row {
-    margin: 0 -0.9375rem;
+.row {
     max-width: none;
     width: auto;
 }

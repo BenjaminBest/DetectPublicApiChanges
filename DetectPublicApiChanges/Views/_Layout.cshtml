@@ -7,10 +7,19 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <title>@ViewBag.Title</title>
+    <script>
+        $(document).ready(function(){
+
+            $('.article').on('click','.detail-column', function() {  
+                $(this).next().toggleClass('toggle-open');
+            });		
+        });			
+    </script>
     <style>
         @MyHtmlHelper.RenderCss()
-        </style>
+    </style>
 </head>
 <body>
 <div class="flex-container">
