@@ -118,6 +118,7 @@ namespace DetectPublicApiChanges.Steps
                         {
                             if (_syntaxNodeRepository.IsSyntaxDeclarationTypeSupported(item))
                             {
+                                //TODO: Project should not be writable, should be automatically determined
                                 var indexItem = _syntaxNodeRepository.Analyze(item);
                                 indexItem.Project = project;
 

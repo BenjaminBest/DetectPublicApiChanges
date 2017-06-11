@@ -24,6 +24,14 @@ namespace DetectPublicApiChanges.Interfaces
         SyntaxNode SyntaxNode { get; }
 
         /// <summary>
+        /// Gets the description.
+        /// </summary>
+        /// <value>
+        /// The description.
+        /// </value>
+        IDiagnosticAnalyzerDescriptor Description { get; }
+
+        /// <summary>
         /// Gets the project of the SyntaxNode.
         /// </summary>
         /// <value>

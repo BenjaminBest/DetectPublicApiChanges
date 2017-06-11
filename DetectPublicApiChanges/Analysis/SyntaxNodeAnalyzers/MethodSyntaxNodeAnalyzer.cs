@@ -14,6 +14,17 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
     public class MethodSyntaxNodeAnalyzer : ISyntaxNodeAnalyzer
     {
         /// <summary>
+        /// Gets the descriptor.
+        /// </summary>
+        /// <value>
+        /// The descriptor.
+        /// </value>
+        private static IDiagnosticAnalyzerDescriptor Descriptor => new DiagnosticAnalyzerDescriptor()
+        {
+            DiagnosticId = "MethodMissing",
+            Category = "Method"
+        };
+        /// <summary>
         /// Creates the item used in an index based on information gathered with the given <paramref name="syntaxNode"/>
         /// </summary>
         /// <param name="syntaxNode">The syntax node.</param>
@@ -25,7 +36,7 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
             if (node == null)
                 throw new ArgumentException("syntaxNode has not the correct type to be analyzed.");
 
-            return new IndexItem(CreateKey(node), syntaxNode);
+            return new IndexItem(CreateKey(node), syntaxNode, Descriptor.AddDescription($"The method {node.Identifier.ValueText} seems to be have been changed or removed"));
         }
 
         /// <summary>

@@ -31,6 +31,17 @@ namespace DetectPublicApiChanges.Analysis.StructureIndex
         }
 
         /// <summary>
+        /// Gets the description.
+        /// </summary>
+        /// <value>
+        /// The description.
+        /// </value>
+        public IDiagnosticAnalyzerDescriptor Description
+        {
+            get;
+        }
+
+        /// <summary>
         /// Gets the project of the SyntaxNode.
         /// </summary>
         /// <value>
@@ -47,10 +58,12 @@ namespace DetectPublicApiChanges.Analysis.StructureIndex
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="syntaxNode">The syntax node.</param>
-        public IndexItem(string key, SyntaxNode syntaxNode)
+        /// <param name="description">The description.</param>
+        public IndexItem(string key, SyntaxNode syntaxNode, IDiagnosticAnalyzerDescriptor description)
         {
             Key = key;
             SyntaxNode = syntaxNode;
+            Description = description;
         }
     }
 }

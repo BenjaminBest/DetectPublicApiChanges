@@ -87,7 +87,7 @@ namespace DetectPublicApiChanges.Steps
                 var reportTime = _store.GetItem<DateTime>(StoreKeys.ReportTime);
                 var title = $"{reportTime:yyyy-MM-dd HH:mm:ss} {_options.Title}";
 
-                var subtitle = string.Empty;
+                string subtitle;
 
                 var connection = _store.GetItem<ISourceControlConfiguration>(StoreKeys.RepositoryConnection);
 

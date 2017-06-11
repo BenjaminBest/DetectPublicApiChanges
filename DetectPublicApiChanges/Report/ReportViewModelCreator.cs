@@ -139,9 +139,8 @@ namespace DetectPublicApiChanges.Report
                             detail = details[@class.GetFullName()];
                         }
 
-                        detail.Tags.Add("Class");
-                        detail.Content.Add(
-                            $"The class {@class.Identifier.ValueText} itself seems to be changed or removed");
+                        detail.Tags.Add(diff.Description.Category);
+                        detail.Content.Add(diff.Description.Description);
                     }
                 }
 
@@ -163,8 +162,8 @@ namespace DetectPublicApiChanges.Report
                             detail = details[@interface.GetFullName()];
                         }
 
-                        detail.Tags.Add("Interface");
-                        detail.Content.Add($"The interface {@interface.Identifier.ValueText} itself seems to be changed or removed");
+                        detail.Tags.Add(diff.Description.Category);
+                        detail.Content.Add(diff.Description.Description);
                     }
                 }
 
@@ -204,28 +203,36 @@ namespace DetectPublicApiChanges.Report
                 var method = diff.SyntaxNode as MethodDeclarationSyntax;
                 if (method != null)
                 {
-                    detail.Tags.Add("Method");
-                    detail.Content.Add($"The Method {method.Identifier.ValueText} seems to be changed or removed");
+                    detail.Tags.Add(diff.Description.Category);
+                    detail.Content.Add(diff.Description.Description);
                 }
 
                 var ctor = diff.SyntaxNode as ConstructorDeclarationSyntax;
                 if (ctor != null)
                 {
-                    detail.Tags.Add("Constructor");
-                    detail.Content.Add("The Constructor seems to be changed or removed");
+                    detail.Tags.Add(diff.Description.Category);
+                    detail.Content.Add(diff.Description.Description);
                 }
 
                 var property = diff.SyntaxNode as PropertyDeclarationSyntax;
                 if (property != null)
                 {
-                    detail.Tags.Add("Property");
-                    detail.Content.Add($"The Property {property.Identifier.ValueText} seems to be changed or removed");
+                    detail.Tags.Add(diff.Description.Category);
+                    detail.Content.Add(diff.Description.Description);
                 }
             }
 
             return details.Select(d => d.Value).ToList();
         }
 
+        /// <summary>
+        /// Creates the detail item.
+        /// </summary>
+        /// <param name="title">The title.</param>
+        /// <param name="subtitle">The subtitle.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="type">The type.</param>
+        /// <returns></returns>
         protected virtual DetailViewModel CreateDetailItem(string title, string subtitle, string key, string type)
         {
             var detail = new DetailViewModel()

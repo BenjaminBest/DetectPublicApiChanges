@@ -56,13 +56,13 @@
                 <h3 class="page-subtitle" id="#Changelog">Repository changelog</h3>
 
                 <div class="changelogItem">
-                    <table>
+                    <table id="table_changelog">
                         <tbody>
                         @foreach (ChangeLogViewModel item in Model.ChangeLog)
                         {
                             <tr>
-                                <td>@Raw(item.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss"))<td>
-                                <td>@Raw(item.Author)<td>
+                                <td nowrap>@Raw(item.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss"))<td>
+                                <td nowrap>@Raw(item.Author)<td>
                                 <td>@Raw(item.Message)<td>
                             </tr>
                         }
@@ -78,7 +78,7 @@
         {
             <div class="row details">
                 <div class="column detail-column" id="@item.Key">
-                    <h4 class="detail-title"><i class="fa scenario-expand-icon fa-angle-down"></i><span class="detail-group-name">@item.Title</span>@item.Subtitle</h4>
+                    <h4 class="detail-title"><i class="fa scenario-expand-icon fa-angle-down"></i><span class="detail-group-name">@item.Title</span><span class="detail-subtitle">@item.Subtitle</span></h4>
                     <div class="detail-information">
                         <table>
                             <tbody>
