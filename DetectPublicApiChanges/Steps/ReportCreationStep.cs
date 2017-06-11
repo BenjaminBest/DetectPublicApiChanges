@@ -2,6 +2,7 @@
 using System.IO;
 using DetectPublicApiChanges.Common;
 using DetectPublicApiChanges.Interfaces;
+using DetectPublicApiChanges.SourceControl.Interfaces;
 using log4net;
 
 namespace DetectPublicApiChanges.Steps

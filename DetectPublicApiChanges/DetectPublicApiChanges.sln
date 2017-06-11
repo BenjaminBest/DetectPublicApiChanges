@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DetectPublicApiChanges", "D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DetectPublicApiChanges.Tests", "..\DetectPublicApiChanges.Tests\DetectPublicApiChanges.Tests.csproj", "{915572F5-751A-4A2B-9316-9752219B92CF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DetectPublicApiChanges.SourceControl", "..\DetectPublicApiChanges.SourceControl\DetectPublicApiChanges.SourceControl.csproj", "{E0C99F2C-7052-4A97-B347-5B99E3D09BD0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DetectPublicApiChanges.SourceControl.Tests", "..\DetectPublicApiChanges.SourceControl.Tests\DetectPublicApiChanges.SourceControl.Tests.csproj", "{5B4BE69B-0989-4EE0-83CE-CE40D2EFF7EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{915572F5-751A-4A2B-9316-9752219B92CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{915572F5-751A-4A2B-9316-9752219B92CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{915572F5-751A-4A2B-9316-9752219B92CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0C99F2C-7052-4A97-B347-5B99E3D09BD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0C99F2C-7052-4A97-B347-5B99E3D09BD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0C99F2C-7052-4A97-B347-5B99E3D09BD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0C99F2C-7052-4A97-B347-5B99E3D09BD0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B4BE69B-0989-4EE0-83CE-CE40D2EFF7EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B4BE69B-0989-4EE0-83CE-CE40D2EFF7EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B4BE69B-0989-4EE0-83CE-CE40D2EFF7EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B4BE69B-0989-4EE0-83CE-CE40D2EFF7EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

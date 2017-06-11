@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using DetectPublicApiChanges.Interfaces;
+using DetectPublicApiChanges.SourceControl.Interfaces;
 
-namespace DetectPublicApiChanges.Common
+namespace DetectPublicApiChanges.SourceControl.Common
 {
     /// <summary>
     /// SourceControlChangeLog defines a change log for revisions
@@ -20,7 +20,7 @@ namespace DetectPublicApiChanges.Common
         /// <value>
         /// The start revision.
         /// </value>
-        public int StartRevision { get; }
+        public string StartRevision { get; }
 
         /// <summary>
         /// Gets the end revision.
@@ -28,7 +28,7 @@ namespace DetectPublicApiChanges.Common
         /// <value>
         /// The end revision.
         /// </value>
-        public int EndRevision { get; }
+        public string EndRevision { get; }
 
         /// <summary>
         /// Gets the messages.
@@ -43,7 +43,7 @@ namespace DetectPublicApiChanges.Common
         /// </summary>
         /// <param name="startRevision">The start revision.</param>
         /// <param name="endRevision">The end revision.</param>
-        public SourceControlChangeLog(int startRevision, int endRevision)
+        public SourceControlChangeLog(string startRevision, string endRevision)
         {
             StartRevision = startRevision;
             EndRevision = endRevision;

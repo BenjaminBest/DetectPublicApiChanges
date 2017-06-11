@@ -39,7 +39,7 @@ namespace DetectPublicApiChanges.Report.Mvc
                 if (helper == null)
                 {
                     var writer = this.CurrentWriter; //TemplateBase.CurrentWriter
-                    var vcontext = new ViewContext() { RequestContext = HttpContext.Current.Request.RequestContext, Writer = writer, ViewData = this.ViewData };
+                    var vcontext = new ViewContext { RequestContext = HttpContext.Current.Request.RequestContext, Writer = writer, ViewData = ViewData };
 
                     helper = new HtmlHelper<T>(vcontext, this);
                 }

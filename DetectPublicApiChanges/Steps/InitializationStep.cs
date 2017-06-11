@@ -3,6 +3,7 @@ using System.IO;
 using DetectPublicApiChanges.Analysis.Roslyn;
 using DetectPublicApiChanges.Common;
 using DetectPublicApiChanges.Interfaces;
+using DetectPublicApiChanges.SourceControl.Common;
 using log4net;
 
 namespace DetectPublicApiChanges.Steps

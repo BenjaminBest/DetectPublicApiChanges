@@ -1,6 +1,6 @@
-﻿using DetectPublicApiChanges.Interfaces;
+﻿using DetectPublicApiChanges.SourceControl.Interfaces;
 
-namespace DetectPublicApiChanges.Common
+namespace DetectPublicApiChanges.SourceControl.Common
 {
     /// <summary>
     /// SourceControlCredentials contains all information needed to login to a subversion server
@@ -24,10 +24,10 @@ namespace DetectPublicApiChanges.Common
         public string Password { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SourceControlCredentials"/> class.
+        /// Initializes a new instance of the <see cref="SourceControlCredentials" /> class.
         /// </summary>
         /// <param name="user">The user.</param>
-        /// <param name="password">The password.</param>
+        /// <param name="password">The user.</param>
         public SourceControlCredentials(string user, string password)
         {
             User = user;

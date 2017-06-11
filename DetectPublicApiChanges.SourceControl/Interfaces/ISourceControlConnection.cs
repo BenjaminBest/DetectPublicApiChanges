@@ -1,6 +1,6 @@
-﻿using DetectPublicApiChanges.Common;
+﻿using DetectPublicApiChanges.SourceControl.Common;
 
-namespace DetectPublicApiChanges.Interfaces
+namespace DetectPublicApiChanges.SourceControl.Interfaces
 {
     /// <summary>
     /// The interface ISourceControlConnection defines all information needed to connect to a repository
@@ -13,7 +13,7 @@ namespace DetectPublicApiChanges.Interfaces
         /// <value>
         /// The repository source revision.
         /// </value>
-        int StartRevision { get; }
+        string StartRevision { get; }
 
         /// <summary>
         /// Gets or sets the repository target revision.
@@ -21,7 +21,7 @@ namespace DetectPublicApiChanges.Interfaces
         /// <value>
         /// The repository target revision.
         /// </value>
-        int EndRevision { get; }
+        string EndRevision { get; }
 
         /// <summary>
         /// Gets or sets the repository URL.
@@ -46,5 +46,11 @@ namespace DetectPublicApiChanges.Interfaces
         /// The type.
         /// </value>
         SourceControlType Type { get; }
+
+        /// <summary>
+        /// Creates the client.
+        /// </summary>
+        /// <returns></returns>
+        ISourceControlClient CreateClient();
     }
 }

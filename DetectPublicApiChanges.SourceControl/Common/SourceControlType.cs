@@ -1,4 +1,4 @@
-﻿namespace DetectPublicApiChanges.Common
+﻿namespace DetectPublicApiChanges.SourceControl.Common
 {
     /// <summary>
     /// SourceControlType defines the type of source control system

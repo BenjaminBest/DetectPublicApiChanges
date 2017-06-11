@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DetectPublicApiChanges.Interfaces
+namespace DetectPublicApiChanges.SourceControl.Interfaces
 {
     /// <summary>
     /// The interface ISourceControlChangeLogItem defines one log item for a changelog

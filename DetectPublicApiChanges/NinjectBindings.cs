@@ -7,6 +7,9 @@ using DetectPublicApiChanges.Interfaces;
 using DetectPublicApiChanges.Jobs;
 using DetectPublicApiChanges.Report;
 using DetectPublicApiChanges.Report.Mvc;
+using DetectPublicApiChanges.SourceControl.Git;
+using DetectPublicApiChanges.SourceControl.Interfaces;
+using DetectPublicApiChanges.SourceControl.Subversion;
 using DetectPublicApiChanges.Steps;
 using log4net;
 using Ninject.Modules;
@@ -24,7 +27,10 @@ namespace DetectPublicApiChanges
             Bind<IOptions>().To<Options>().InSingletonScope();
             Bind<IFileService>().To<FileService>();
             Bind<IJobRegistry>().To<JobRegistry>().InSingletonScope();
+
+            //Source control
             Bind<ISourceControlClient>().To<SubversionSourceControlClient>();
+            Bind<ISourceControlClient>().To<GitSourceControlClient>();
 
             Bind<ILog>().ToMethod(context =>
             {

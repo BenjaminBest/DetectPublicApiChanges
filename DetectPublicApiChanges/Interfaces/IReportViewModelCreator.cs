@@ -1,4 +1,5 @@
 ﻿using DetectPublicApiChanges.Report.Models;
+using DetectPublicApiChanges.SourceControl.Interfaces;
 
 namespace DetectPublicApiChanges.Interfaces
 {

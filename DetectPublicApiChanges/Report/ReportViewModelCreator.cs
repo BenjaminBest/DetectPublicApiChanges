@@ -3,6 +3,7 @@ using System.Linq;
 using DetectPublicApiChanges.Analysis.Roslyn;
 using DetectPublicApiChanges.Interfaces;
 using DetectPublicApiChanges.Report.Models;
+using DetectPublicApiChanges.SourceControl.Interfaces;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;

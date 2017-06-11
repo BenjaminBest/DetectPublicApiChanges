@@ -105,12 +105,6 @@
     <Reference Include="RazorEngine, Version=3.9.3.0, Culture=neutral, PublicKeyToken=9ee697374c7e744a, processorArchitecture=MSIL">
       <HintPath>packages\RazorEngine.3.9.3\lib\net45\RazorEngine.dll</HintPath>
     </Reference>
-    <Reference Include="SharpSvn, Version=1.8017.3940.496, Culture=neutral, PublicKeyToken=d729672594885a28, processorArchitecture=x86">
-      <HintPath>packages\SharpSvn.1.8-x86.1.8017.3940.496\lib\net40\SharpSvn.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpSvn.UI, Version=1.8017.3940.496, Culture=neutral, PublicKeyToken=33789aa53ca44aa9, processorArchitecture=MSIL">
-      <HintPath>packages\SharpSvn.1.8-x86.1.8017.3940.496\lib\net40\SharpSvn.UI.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.AppContext, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>packages\System.AppContext.4.3.0\lib\net46\System.AppContext.dll</HintPath>
@@ -248,25 +242,14 @@
     <Compile Include="Analysis\SyntaxNodeAnalyzers\ConstructorSyntaxNodeAnalyzer.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\ClassSyntaxNodeAnalyzer.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\SyntaxNodeAnalyzerRepository.cs" />
-    <Compile Include="Common\SourceControlType.cs" />
-    <Compile Include="Common\SourceControlConnection.cs" />
     <Compile Include="Interfaces\IPublicClassModifierDetector.cs" />
     <Compile Include="Analysis\PublicMemberDetection\PublicClassModifierDetector.cs" />
     <Compile Include="Analysis\StructureIndex\StructureIndexComparisonResult.cs" />
     <Compile Include="Analysis\StructureIndex\StructureIndexKeyComparator.cs" />
     <Compile Include="Common\FileService.cs" />
-    <Compile Include="Common\SourceControlChangeLog.cs" />
-    <Compile Include="Common\SourceControlChangeLogItem.cs" />
-    <Compile Include="Interfaces\ISourceControlChangeLog.cs" />
-    <Compile Include="Interfaces\ISourceControlChangeLogItem.cs" />
-    <Compile Include="Interfaces\ISourceControlConnection.cs" />
-    <Compile Include="Interfaces\ISourceControlCredentials.cs" />
-    <Compile Include="Common\SourceControlCredentials.cs" />
-    <Compile Include="Common\SubversionSourceControlClient.cs" />
     <Compile Include="Interfaces\IFileService.cs" />
     <Compile Include="Interfaces\IRenderer.cs" />
     <Compile Include="Interfaces\IReportViewModelCreator.cs" />
-    <Compile Include="Interfaces\ISourceControlClient.cs" />
     <Compile Include="Interfaces\IStructureIndexComparator.cs" />
     <Compile Include="Interfaces\IStructureIndexComparisonResult.cs" />
     <Compile Include="Interfaces\IStructureIndexItem.cs" />
@@ -334,7 +317,12 @@
     <Analyzer Include="packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\DetectPublicApiChanges.SourceControl\DetectPublicApiChanges.SourceControl.csproj">
+      <Project>{e0c99f2c-7052-4a97-b347-5b99e3d09bd0}</Project>
+      <Name>DetectPublicApiChanges.SourceControl</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

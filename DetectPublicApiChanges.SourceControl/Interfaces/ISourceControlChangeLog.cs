@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DetectPublicApiChanges.Interfaces
+namespace DetectPublicApiChanges.SourceControl.Interfaces
 {
     /// <summary>
     /// The interface ISourceControlChangeLog defines a change log for revisions
@@ -13,7 +13,7 @@ namespace DetectPublicApiChanges.Interfaces
         /// <value>
         /// The start revision.
         /// </value>
-        int StartRevision { get; }
+        string StartRevision { get; }
 
         /// <summary>
         /// Gets the end revision.
@@ -21,7 +21,7 @@ namespace DetectPublicApiChanges.Interfaces
         /// <value>
         /// The end revision.
         /// </value>
-        int EndRevision { get; }
+        string EndRevision { get; }
 
         /// <summary>
         /// Gets the items.

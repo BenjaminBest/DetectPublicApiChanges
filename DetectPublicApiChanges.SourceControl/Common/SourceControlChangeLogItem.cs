@@ -1,7 +1,7 @@
 ﻿using System;
-using DetectPublicApiChanges.Interfaces;
+using DetectPublicApiChanges.SourceControl.Interfaces;
 
-namespace DetectPublicApiChanges.Common
+namespace DetectPublicApiChanges.SourceControl.Subversion
 {
     /// <summary>
     /// SourceControlChangeLogItem defines one log item for a changelog
@@ -34,11 +34,11 @@ namespace DetectPublicApiChanges.Common
         public DateTime TimeStamp { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SourceControlChangeLogItem"/> class.
+        /// Initializes a new instance of the <see cref="SourceControlChangeLogItem" /> class.
         /// </summary>
         /// <param name="author">The author.</param>
-        /// <param name="message">The message.</param>
-        /// <param name="timeStamp">The time stamp.</param>
+        /// <param name="message">The author.</param>
+        /// <param name="timeStamp">The message.</param>
         public SourceControlChangeLogItem(string author, string message, DateTime timeStamp)
         {
             Author = author;

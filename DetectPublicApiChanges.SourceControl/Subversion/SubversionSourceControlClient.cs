@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
-using DetectPublicApiChanges.Interfaces;
-using log4net;
+using DetectPublicApiChanges.SourceControl.Common;
+using DetectPublicApiChanges.SourceControl.Interfaces;
 using SharpSvn;
 
-namespace DetectPublicApiChanges.Common
+namespace DetectPublicApiChanges.SourceControl.Subversion
 {
     /// <summary>
     /// SubversionSourceControlClient encapsulates a subversion client to access svn repositories
@@ -13,18 +13,12 @@ namespace DetectPublicApiChanges.Common
     public class SubversionSourceControlClient : ISourceControlClient
     {
         /// <summary>
-        /// The logger
+        /// Gets the type.
         /// </summary>
-        private readonly ILog _logger;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SubversionSourceControlClient"/> class.
-        /// </summary>
-        /// <param name="logger">The logger.</param>
-        public SubversionSourceControlClient(ILog logger)
-        {
-            _logger = logger;
-        }
+        /// <value>
+        /// The type.
+        /// </value>
+        public SourceControlType Type => SourceControlType.Svn;
 
         /// <summary>
         /// Checks out the source code by using credentials.
@@ -33,15 +27,12 @@ namespace DetectPublicApiChanges.Common
         /// <param name="localFolder">The local folder.</param>
         /// <param name="revision">The revision.</param>
         /// <param name="credentials">The credentials.</param>
-        public void CheckOut(Uri repositoryUrl, DirectoryInfo localFolder, int revision, ISourceControlCredentials credentials = null)
+        public void CheckOut(Uri repositoryUrl, DirectoryInfo localFolder, string revision, ISourceControlCredentials credentials = null)
         {
-            _logger.Info($"Checkout of '{repositoryUrl.AbsolutePath}' to '{localFolder.FullName}'");
-
             using (var client = new SvnClient())
             {
                 if (credentials != null)
                 {
-                    _logger.Info("Not using credentials");
                     client.Authentication.ForceCredentials(credentials.User, credentials.Password);
                 }
 
@@ -49,9 +40,7 @@ namespace DetectPublicApiChanges.Common
 
                 // Checkout the code to the specified directory
                 client.CheckOut(repositoryUrl, localFolder.FullName,
-                    new SvnCheckOutArgs() { Revision = new SvnRevision(revision) });
-
-                _logger.Info("Checkout finished");
+                    new SvnCheckOutArgs { Revision = new SvnRevision(int.Parse(revision)) });
             }
         }
 
@@ -59,22 +48,20 @@ namespace DetectPublicApiChanges.Common
         /// Gets the change log.
         /// </summary>
         /// <param name="repositoryUrl">The repository URL.</param>
+        /// <param name="localFolder">The local folder.</param>
         /// <param name="startRevision">The start revision.</param>
         /// <param name="endRevision">The end revision.</param>
         /// <param name="credentials">The credentials.</param>
         /// <returns></returns>
-        public ISourceControlChangeLog GetChangeLog(Uri repositoryUrl, int startRevision, int endRevision,
+        public ISourceControlChangeLog GetChangeLog(Uri repositoryUrl, DirectoryInfo localFolder, string startRevision, string endRevision,
             ISourceControlCredentials credentials = null)
         {
-            _logger.Info($"Get log of '{repositoryUrl.AbsolutePath}' of revisions {startRevision}-{endRevision}");
-
             var log = new SourceControlChangeLog(startRevision, endRevision);
 
             using (var client = new SvnClient())
             {
                 if (credentials != null)
                 {
-                    _logger.Info("Not using credentials");
                     client.Authentication.ForceCredentials(credentials.User, credentials.Password);
                 }
 
@@ -84,15 +71,13 @@ namespace DetectPublicApiChanges.Common
                     repositoryUrl,
                     new SvnLogArgs
                     {
-                        Range = new SvnRevisionRange(startRevision, endRevision)
+                        Range = new SvnRevisionRange(int.Parse(startRevision), int.Parse(endRevision))
                     },
                     (o, e) =>
                     {
                         log.AddItem(new SourceControlChangeLogItem(e.Author, e.LogMessage, e.Time));
                     });
             }
-
-            _logger.Info("Showlog finished");
 
             return log;
         }

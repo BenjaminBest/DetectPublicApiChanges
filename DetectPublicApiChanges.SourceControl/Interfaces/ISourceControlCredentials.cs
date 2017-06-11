@@ -1,4 +1,4 @@
-﻿namespace DetectPublicApiChanges.Interfaces
+﻿namespace DetectPublicApiChanges.SourceControl.Interfaces
 {
     /// <summary>
     /// The interface ISourceControlCredentials defines credentials to be used for source control authentification
