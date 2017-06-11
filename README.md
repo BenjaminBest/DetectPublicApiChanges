@@ -1,6 +1,6 @@
 Detect public API changes with Roslyn
 =====================================
-This repository contains a console application which can be used to compare two visual studio solutions with [roslyn](https://github.com/dotnet/roslyn) using the Syntax Tree. The program supports two modes, the first one is just using existent folders to read the solution file from. The second mode supports SVN via [SharpSvn](https://sharpsvn.open.collab.net/) and automatically checkout's two revisions which then are used for comparison.
+This repository contains a console application which can be used to compare two visual studio solutions with [roslyn](https://github.com/dotnet/roslyn) using the Syntax Tree. The program supports two modes, the first one is just using folders to read the solution files from. The second mode supports SVN via [SharpSvn](https://sharpsvn.open.collab.net/) or GIT via [libgit2sharp](https://github.com/libgit2/libgit2sharp/). The checkout of two revisions happens then automatically and these are then used for comparison.
 
 Based on the information gathered with the Syntax Tree an index for every solution is created which contains unique keys for every structure (class, interface, constructor, methods or property) including parameter and return-types, names and modifiers.
 
@@ -17,13 +17,20 @@ Usage
 Compile the solution in release mode with at least Visual Studio 2017
 
 ### Using source control
-In a CMD window start the application by using parameters for the source control connection (svn), the solutions which should be analyzed. The program automatically creates a output directory.
+#### Subversion
+In a CMD window start the application by using parameters which contains all the information needed to access subversion.
+
 > DetectPublicApiChanges.exe --repositoryConnectionString "Svn;https://XYZ/svn/DetectPublicApiChanges/trunk;20;28;user;password" --solutionPathSource "DetectPublicApiChanges\DetectPublicApiChanges.sln" --solutionPathTarget "DetectPublicApiChanges\DetectPublicApiChanges.sln"
 
-So a connection string is defined by 4 to 6 parts: `SourceControlSystem;URL;StartRevision;EndRevision;User;Password`, whereas user and password are optional. Currently SourceControlSystem must be `Svn`. The checkout is done to folders inside the working folder which is located relative to the application and it's per default named "Work". The folders which contains the revisions are named "Source" and "Target".
+#### Git
+To compare two commits of this application using `Git`, just add the URL, and 2 SHA's to the connection string:
+
+> DetectPublicApiChanges.exe --repositoryConnectionString "Git;https://github.com/BenjaminBest/DetectPublicApiChanges.git;4b8d215a190ce8ce92d77409c3fb200ef30a60b3;1d9bd50b1fb0eb53741652022d7de5850f59cdff" --solutionPathSource "DetectPublicApiChanges\DetectPublicApiChanges.sln" --solutionPathTarget "DetectPublicApiChanges\DetectPublicApiChanges.sln"
+
+So a connection string is defined by 4 to 6 parts: `SourceControlSystem;URL;StartRevision;EndRevision;User;Password`, whereas user and password are optional. The checkout is done to folders inside the working folder which is located relative to the application and it's per default named "Work". The folders which contains the revisions are named "Source" and "Target".
 
 ### Using normal local folders
-For local folders the syntax easier.
+For local folders the syntax is easier:
 > DetectPublicApiChanges.exe --solutionPathSource "C:\Folder1\DetectPublicApiChanges\DetectPublicApiChanges.sln" --solutionPathTarget "C:\Folder2\DetectPublicApiChanges\DetectPublicApiChanges.sln"
 
 ### The output folder
@@ -50,7 +57,7 @@ The program always create a unique directory inside the work-folder based on a f
 	|-- ...
 ```
 
-### Commandline Parameters
+### Other commandline parameters
 A self test is build in and can be invoked by just running the EXE without a parameter:
 > DetectPublicApiChanges.exe
 
@@ -61,19 +68,23 @@ Most likely unit test projects should not be recognized in the change detection 
 
 a regex filter can be defined which filters all projects out that **matches**. The regex is analyzed in a non case sensitive way.
 
+The title of the report can be manuelly set by using the `title` parameter:
+> --title "All breaking changes of release X.Y.Z"
+
 ### Logging
 The application uses log4net for logging. Be aware that using debug causes the log files to grow rapidly.
 
 Implementation
 --------------
-### Important Dependencies
+### Important dependencies
 1. [roslyn](https://github.com/dotnet/roslyn)
 2. [SharpSvn](https://sharpsvn.open.collab.net/)
-3. [Command Line Parser Library](https://www.nuget.org/packages/CommandLineParser/1.9.71)
-4. [RazorEngine](https://github.com/Antaris/RazorEngine)
-5. [NetJSON](https://github.com/rpgmaker/NetJSON)
+3. [libgit2sharp](https://github.com/libgit2/libgit2sharp/)
+4. [Command Line Parser Library](https://www.nuget.org/packages/CommandLineParser/1.9.71)
+5. [RazorEngine](https://github.com/Antaris/RazorEngine)
+6. [NetJSON](https://github.com/rpgmaker/NetJSON)
 
-### Subversion Checkout
+### Subversion checkout & changelog
 As source control client currently subversion is supported. To actually do the checkout just a few lines of code are involved using [SharpSvn](https://sharpsvn.open.collab.net/):
 ```csharp
 public void CheckOut(Uri repositoryUrl, DirectoryInfo localFolder, int revision, ISourceControlCredentials credentials = null)
@@ -122,6 +133,70 @@ public ISourceControlChangeLog GetChangeLog(Uri repositoryUrl, int startRevision
 }
 ```
 
+### Git checkout & changelog
+The approach of getting the source code is more complex with Git: First of all a local repository needs to be initialized because Git is not a centralized source code control system. Then the connection to the remote repository needs to be established, after that the source code is being fetched. The last step involves doing a checkout, which actually switches to a specific revision.
+
+```csharp
+public void CheckOut(Uri repositoryUrl, DirectoryInfo localFolder, string revision, ISourceControlCredentials credentials = null)
+{
+    //Create repository
+    Repository.Init(localFolder.FullName);
+
+    //Fetch & Checkout
+    using (var repo = new Repository(localFolder.FullName))
+    {
+        AddOrUpdateRemote(repo, "origin", repositoryUrl);
+
+        var fetchOptions = new FetchOptions
+        {
+            CredentialsProvider = (url, usernameFromUrl, types) =>
+                new UsernamePasswordCredentials
+                {
+                    Username = credentials.User,
+                    Password = credentials.Password
+                }
+        };
+
+        foreach (var remote in repo.Network.Remotes)
+        {
+            var refSpecs = remote.FetchRefSpecs.Select(x => x.Specification);
+            Commands.Fetch(repo, remote.Name, refSpecs, fetchOptions, string.Empty);
+        }
+
+        var commit = repo.Lookup<Commit>(revision);
+        Commands.Checkout(repo, commit);
+    }
+}
+```
+
+Getting the commit log is relatively easy by just adding a filter to specify a commit range:
+
+```csharp
+public ISourceControlChangeLog GetChangeLog(Uri repositoryUrl, DirectoryInfo localFolder, string startRevision, string endRevision,
+    ISourceControlCredentials credentials = null)
+{
+    CheckOut(repositoryUrl, localFolder, endRevision, credentials);
+
+    var log = new SourceControlChangeLog(startRevision, endRevision);
+
+    using (var repo = new Repository(localFolder.FullName))
+    {
+        var filter = new CommitFilter
+        {
+            IncludeReachableFrom = endRevision,
+            ExcludeReachableFrom = startRevision
+        };
+
+        foreach (var commit in repo.Commits.QueryBy(filter))
+        {
+            log.AddItem(new SourceControlChangeLogItem(commit.Author.Name, commit.Message, commit.Author.When.DateTime));
+        }
+    }
+
+    return log;
+}
+```
+
 ### Roslyn syntax tree analysis
 Basically [roslyn](https://github.com/dotnet/roslyn) divides the analysis in syntax and semantic analysis. As in the documentation of [roslyn](https://github.com/dotnet/roslyn) outlined: 'Syntax trees are the primary structure used for compilation, code analysis, binding, refactoring, IDE features, and code generation'. This model is used to analyze the source code of the given solution.
 
@@ -155,7 +230,7 @@ For the basic comparison of public members these [roslyn](https://github.com/dot
           |-- PropertyDeclarationSyntax
 ```
 
-The most generic type which can be used it the `SyntaxNode`.
+The most generic type which can be used is the `SyntaxNode`.
 
 Below the basic C# code to read the solution file is described. It is also possible to directly analyze C# via a string, which is useful for unit tests.
 
@@ -164,7 +239,7 @@ The basic C# code to go over all projects in a solution, load the document and t
 
 > `OfType<ClassDeclarationSyntax>()`
 
-and retrieves the name and the fullnamespace.
+and retrieves the name and the full namespace.
 
 ```csharp
 private void AnalyzeSyntaxTree(string solutionPath)
