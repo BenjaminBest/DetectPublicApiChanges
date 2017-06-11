@@ -46,7 +46,9 @@ namespace DetectPublicApiChanges.Report.Mvc
                 {
                     viewsFolder.FullName
                 }),
-                BaseTemplateType = typeof(HtmlTemplateBase<>)
+                BaseTemplateType = typeof(HtmlTemplateBase<>),
+                DisableTempFileLocking = true,
+                CachingProvider = new DefaultCachingProvider(t => { })
             };
 
             _razorEngineService = RazorEngineService.Create(config);
