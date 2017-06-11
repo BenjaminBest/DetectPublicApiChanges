@@ -31,20 +31,28 @@ namespace DetectPublicApiChanges.Steps
         private readonly IOptions _options;
 
         /// <summary>
+        /// The source control factory
+        /// </summary>
+        private readonly ISourceControlFactory _sourceControlFactory;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="RepositoryCheckoutStep" /> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
         /// <param name="store">The store.</param>
         /// <param name="options">The options.</param>
+        /// <param name="sourceControlFactory">The source control factory.</param>
         public RepositoryCheckoutStep(
             ILog logger,
             IStore store,
-            IOptions options)
+            IOptions options,
+            ISourceControlFactory sourceControlFactory)
             : base(logger)
         {
             _logger = logger;
             _store = store;
             _options = options;
+            _sourceControlFactory = sourceControlFactory;
         }
 
         /// <summary>
@@ -54,22 +62,22 @@ namespace DetectPublicApiChanges.Steps
         {
             ExecuteSafe(() =>
             {
-                var connection = _store.GetItem<ISourceControlConnection>(StoreKeys.RepositoryConnection);
+                var configuration = _store.GetItem<ISourceControlConfiguration>(StoreKeys.RepositoryConnection);
 
-                if (connection == null)
+                if (configuration == null)
                 {
                     _logger.Info("No source control system is used");
                     return;
                 }
 
-                var client = connection.CreateClient();
+                var client = _sourceControlFactory.CreateClient(configuration);
 
                 var checkoutFolderSource = new DirectoryInfo(Path.Combine(_store.GetItem<DirectoryInfo>(StoreKeys.WorkPath).FullName, "Source"));
                 var checkoutFolderTarget = new DirectoryInfo(Path.Combine(_store.GetItem<DirectoryInfo>(StoreKeys.WorkPath).FullName, "Target"));
 
                 //Checkout
-                client.CheckOut(new Uri(connection.RepositoryUrl), checkoutFolderSource, connection.StartRevision, connection.Credentials);
-                client.CheckOut(new Uri(connection.RepositoryUrl), checkoutFolderTarget, connection.EndRevision, connection.Credentials);
+                client.CheckOut(new Uri(configuration.RepositoryUrl), checkoutFolderSource, configuration.StartRevision, configuration.Credentials);
+                client.CheckOut(new Uri(configuration.RepositoryUrl), checkoutFolderTarget, configuration.EndRevision, configuration.Credentials);
 
                 //Set global folders
                 _store.SetOrAddItem(StoreKeys.SolutionPathSource, Path.Combine(checkoutFolderSource.FullName, _options.SolutionPathSource));
@@ -77,7 +85,7 @@ namespace DetectPublicApiChanges.Steps
 
                 //Get Changelog
                 _store.SetOrAddItem(StoreKeys.RepositoryChangeLog,
-                    client.GetChangeLog(new Uri(connection.RepositoryUrl), checkoutFolderTarget, connection.StartRevision, connection.EndRevision, connection.Credentials));
+                    client.GetChangeLog(new Uri(configuration.RepositoryUrl), checkoutFolderTarget, configuration.StartRevision, configuration.EndRevision, configuration.Credentials));
             });
         }
     }

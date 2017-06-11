@@ -5,6 +5,7 @@ using DetectPublicApiChanges.SourceControl.Common;
 using DetectPublicApiChanges.SourceControl.Interfaces;
 using DetectPublicApiChanges.SourceControl.Subversion;
 using LibGit2Sharp;
+using log4net;
 
 namespace DetectPublicApiChanges.SourceControl.Git
 {
@@ -15,12 +16,26 @@ namespace DetectPublicApiChanges.SourceControl.Git
     public class GitSourceControlClient : ISourceControlClient
     {
         /// <summary>
+        /// The logger
+        /// </summary>
+        private readonly ILog _logger;
+
+        /// <summary>
         /// Gets the type.
         /// </summary>
         /// <value>
         /// The type.
         /// </value>
         public SourceControlType Type => SourceControlType.Git;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GitSourceControlClient"/> class.
+        /// </summary>
+        /// <param name="logger">The logger.</param>
+        public GitSourceControlClient(ILog logger)
+        {
+            _logger = logger;
+        }
 
         /// <summary>
         /// Checks out the source code by using credentials.
@@ -31,8 +46,12 @@ namespace DetectPublicApiChanges.SourceControl.Git
         /// <param name="credentials">The credentials.</param>
         public void CheckOut(Uri repositoryUrl, DirectoryInfo localFolder, string revision, ISourceControlCredentials credentials = null)
         {
+            _logger.Info($"Git: Checkout of '{repositoryUrl.OriginalString}' to '{localFolder.FullName}'");
+
             //Create repository
             Repository.Init(localFolder.FullName);
+
+            _logger.Info($"Git: Local repository initialized here: '{localFolder.FullName}'");
 
             //Fetch & Checkout
             using (var repo = new Repository(localFolder.FullName))
@@ -55,8 +74,12 @@ namespace DetectPublicApiChanges.SourceControl.Git
                     Commands.Fetch(repo, remote.Name, refSpecs, fetchOptions, string.Empty);
                 }
 
+                _logger.Info($"Git: Looking up the commit '{revision}'");
                 var commit = repo.Lookup<Commit>(revision);
+                _logger.Info($"Git: Commit found with SHA '{commit.Sha}' and short message: '{commit.MessageShort}'");
+
                 Commands.Checkout(repo, commit);
+                _logger.Info("Git: Checkout completed");
             }
         }
 
@@ -99,17 +122,19 @@ namespace DetectPublicApiChanges.SourceControl.Git
         /// <param name="repository">The repository.</param>
         /// <param name="name">The name.</param>
         /// <param name="repositoryUrl">The repository URL.</param>
-        private static void AddOrUpdateRemote(IRepository repository, string name, Uri repositoryUrl)
+        private void AddOrUpdateRemote(IRepository repository, string name, Uri repositoryUrl)
         {
             var remote = repository.Network.Remotes.FirstOrDefault(r => r.Name.Equals(name));
 
             if (remote == null)
             {
                 repository.Network.Remotes.Add(name, repositoryUrl.OriginalString);
+                _logger.Info($"Git: Remote repository '{repositoryUrl.OriginalString}' registered for alias '{name}'");
             }
             else
             {
                 repository.Network.Remotes.Update(remote.Name, r => r.Url = repositoryUrl.OriginalString);
+                _logger.Info($"Git: Remote repository '{repositoryUrl.OriginalString}' updated for alias '{name}'");
             }
         }
     }

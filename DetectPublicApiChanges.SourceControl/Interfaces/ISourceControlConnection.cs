@@ -3,9 +3,9 @@
 namespace DetectPublicApiChanges.SourceControl.Interfaces
 {
     /// <summary>
-    /// The interface ISourceControlConnection defines all information needed to connect to a repository
+    /// The interface ISourceControlConfiguration defines all information needed to connect to a repository
     /// </summary>
-    public interface ISourceControlConnection
+    public interface ISourceControlConfiguration
     {
         /// <summary>
         /// Gets or sets the repository source revision.
@@ -46,11 +46,5 @@ namespace DetectPublicApiChanges.SourceControl.Interfaces
         /// The type.
         /// </value>
         SourceControlType Type { get; }
-
-        /// <summary>
-        /// Creates the client.
-        /// </summary>
-        /// <returns></returns>
-        ISourceControlClient CreateClient();
     }
 }

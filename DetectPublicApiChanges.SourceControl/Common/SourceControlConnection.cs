@@ -1,15 +1,13 @@
 ﻿using System;
-using DetectPublicApiChanges.SourceControl.Git;
 using DetectPublicApiChanges.SourceControl.Interfaces;
-using DetectPublicApiChanges.SourceControl.Subversion;
 
 namespace DetectPublicApiChanges.SourceControl.Common
 {
     /// <summary>
     /// SourceControlConnection defines all information needed to connect to a repository
     /// </summary>
-    /// <seealso cref="ISourceControlConnection" />
-    public class SourceControlConnection : ISourceControlConnection
+    /// <seealso cref="ISourceControlConfiguration" />
+    public class SourceControlConfiguration : ISourceControlConfiguration
     {
         /// <summary>
         /// Gets or sets the repository source revision.
@@ -52,32 +50,13 @@ namespace DetectPublicApiChanges.SourceControl.Common
         public SourceControlType Type { get; }
 
         /// <summary>
-        /// Creates the client.
-        /// </summary>
-        /// <returns></returns>
-        public ISourceControlClient CreateClient()
-        {
-            //TODO: Use injection of IEnumerable<ISourceControlClient> 
-
-            switch (Type)
-            {
-                case SourceControlType.Svn:
-                    return new SubversionSourceControlClient();
-                case SourceControlType.Git:
-                    return new GitSourceControlClient();
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SourceControlConnection" /> class.
+        /// Initializes a new instance of the <see cref="SourceControlConfiguration" /> class.
         /// </summary>
         /// <param name="startRevision">The start revision.</param>
         /// <param name="endRevision">The end revision.</param>
         /// <param name="repositoryUrl">The repository URL.</param>
         /// <param name="type">The type.</param>
-        public SourceControlConnection(string startRevision, string endRevision, string repositoryUrl, SourceControlType type)
+        public SourceControlConfiguration(string startRevision, string endRevision, string repositoryUrl, SourceControlType type)
         {
             StartRevision = startRevision;
             EndRevision = endRevision;
@@ -94,14 +73,14 @@ namespace DetectPublicApiChanges.SourceControl.Common
         /// </remarks>
         /// <param name="connectionString">The connection string.</param>
         /// <returns></returns>
-        public static SourceControlConnection Parse(string connectionString)
+        public static SourceControlConfiguration Parse(string connectionString)
         {
             var parts = connectionString.Split(';');
 
             if (parts.Length < 4)
                 throw new ArgumentException("The connectionString must at least contain sourceControlType,repositoryUrl,startRevision and endRevision");
 
-            var connection = new SourceControlConnection(
+            var connection = new SourceControlConfiguration(
                 parts[2],
                 parts[3],
                 parts[1],

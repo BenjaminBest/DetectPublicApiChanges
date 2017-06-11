@@ -89,7 +89,7 @@ namespace DetectPublicApiChanges.Steps
 
                 var subtitle = string.Empty;
 
-                var connection = _store.GetItem<ISourceControlConnection>(StoreKeys.RepositoryConnection);
+                var connection = _store.GetItem<ISourceControlConfiguration>(StoreKeys.RepositoryConnection);
 
                 if (connection != null)
                 {

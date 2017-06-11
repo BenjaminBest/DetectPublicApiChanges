@@ -36,6 +36,9 @@
     <Reference Include="LibGit2Sharp, Version=0.23.1.0, Culture=neutral, PublicKeyToken=7cbde695407f0333, processorArchitecture=MSIL">
       <HintPath>..\DetectPublicApiChanges\packages\LibGit2Sharp.0.23.1\lib\net40\LibGit2Sharp.dll</HintPath>
     </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\DetectPublicApiChanges\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="SharpSvn, Version=1.8017.3940.496, Culture=neutral, PublicKeyToken=d729672594885a28, processorArchitecture=x86">
       <HintPath>..\DetectPublicApiChanges\packages\SharpSvn.1.8-x86.1.8017.3940.496\lib\net40\SharpSvn.dll</HintPath>
     </Reference>
@@ -52,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\SourceControlFactory.cs" />
     <Compile Include="Common\SourceControlType.cs" />
     <Compile Include="Git\GitSourceControlClient.cs" />
     <Compile Include="Interfaces\ISourceControlChangeLog.cs" />
@@ -59,6 +63,7 @@
     <Compile Include="Interfaces\ISourceControlClient.cs" />
     <Compile Include="Interfaces\ISourceControlConnection.cs" />
     <Compile Include="Interfaces\ISourceControlCredentials.cs" />
+    <Compile Include="Interfaces\ISourceControlFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Common\SubversionChangeLog.cs" />
     <Compile Include="Common\SourceControlChangeLogItem.cs" />

@@ -26,6 +26,9 @@ namespace DetectPublicApiChanges.Steps
         /// </summary>
         private readonly IStore _store;
 
+        /// <summary>
+        /// The options
+        /// </summary>
         private readonly IOptions _options;
 
         /// <summary>
@@ -60,7 +63,7 @@ namespace DetectPublicApiChanges.Steps
                 _store.SetOrAddItem(StoreKeys.SolutionPathTarget, _options.SolutionPathTarget);
 
                 if (!string.IsNullOrEmpty(_options.RepositoryConnectionString))
-                    _store.SetOrAddItem(StoreKeys.RepositoryConnection, SourceControlConnection.Parse(_options.RepositoryConnectionString));
+                    _store.SetOrAddItem(StoreKeys.RepositoryConnection, SourceControlConfiguration.Parse(_options.RepositoryConnectionString));
             });
         }
     }

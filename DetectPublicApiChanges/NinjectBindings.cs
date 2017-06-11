@@ -7,6 +7,7 @@ using DetectPublicApiChanges.Interfaces;
 using DetectPublicApiChanges.Jobs;
 using DetectPublicApiChanges.Report;
 using DetectPublicApiChanges.Report.Mvc;
+using DetectPublicApiChanges.SourceControl.Common;
 using DetectPublicApiChanges.SourceControl.Git;
 using DetectPublicApiChanges.SourceControl.Interfaces;
 using DetectPublicApiChanges.SourceControl.Subversion;
@@ -31,6 +32,7 @@ namespace DetectPublicApiChanges
             //Source control
             Bind<ISourceControlClient>().To<SubversionSourceControlClient>();
             Bind<ISourceControlClient>().To<GitSourceControlClient>();
+            Bind<ISourceControlFactory>().To<SourceControlFactory>();
 
             Bind<ILog>().ToMethod(context =>
             {
