@@ -20,7 +20,7 @@ namespace DetectPublicApiChanges.Analysis.Filters
         /// <returns></returns>
         public static IEnumerable<Project> Filter(this IEnumerable<Project> projects, string filter)
         {
-            return projects.Where(p => !Regex.IsMatch(p.Name, filter));
+            return string.IsNullOrEmpty(filter) ? projects : projects.Where(p => !Regex.IsMatch(p.Name, filter));
         }
     }
 }
