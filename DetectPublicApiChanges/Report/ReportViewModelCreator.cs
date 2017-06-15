@@ -102,7 +102,15 @@ namespace DetectPublicApiChanges.Report
             };
             interfaces.Count = interfaces.Items.Count;
 
-            navigation.Add(interfaces);
+            //Structs
+            var structs = new NavigationViewModel("Structs", GenerateAnchor("Structs"))
+            {
+                Items = details.Where(d => d.Type.Equals("Struct"))
+                    .Select(d => new NavigationViewModel(d.Title, GenerateAnchor(d.Key))).ToList()
+            };
+            structs.Count = structs.Items.Count;
+
+            navigation.Add(structs);
 
             return navigation;
         }
@@ -196,6 +204,22 @@ namespace DetectPublicApiChanges.Report
                     else
                     {
                         detail = details[parentInterface.GetFullName()];
+                    }
+                }
+
+                //Struct as parent
+                var parentstruct = diff.SyntaxNode.Parent as StructDeclarationSyntax;
+
+                if (parentstruct != null)
+                {
+                    if (!details.ContainsKey(parentstruct.GetFullName()))
+                    {
+                        detail = CreateDetailItem(parentstruct.Identifier.ValueText, parentstruct.GetFullName(), GenerateAnchor(parentstruct.GetFullName()), "Struct");
+                        details.Add(parentstruct.GetFullName(), detail);
+                    }
+                    else
+                    {
+                        detail = details[parentstruct.GetFullName()];
                     }
                 }
 

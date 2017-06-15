@@ -9,7 +9,7 @@ namespace DetectPublicApiChanges.Common
     /// <typeparam name="T"></typeparam>
     public class JobBase<T> where T : class
     {
-        private ILog _logger;
+        private readonly ILog _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JobBase{T}"/> class.
@@ -24,21 +24,24 @@ namespace DetectPublicApiChanges.Common
         /// Executes the action with logging
         /// </summary>
         /// <param name="action">The action.</param>
-        public void ExecuteSafe (Action action)
+        public void ExecuteSafe(Action action)
         {
-            _logger.Debug($"Start execution of job {typeof(T)}");
-
-            try
+            using (new Timer(_logger))
             {
-                action();
-            }
-            catch(Exception ex)
-            {
-                _logger.Error(ex);
-                throw ex;
-            }
+                _logger.Debug($"Start execution of job {typeof(T)}");
 
-            _logger.Debug($"Finished execution of job {typeof(T)}");
+                try
+                {
+                    action();
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex);
+                    throw ex;
+                }
+
+                _logger.Debug($"Finished execution of job {typeof(T)}");
+            }
         }
     }
 }

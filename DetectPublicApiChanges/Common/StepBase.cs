@@ -25,21 +25,24 @@ namespace DetectPublicApiChanges.Common
         /// Excecutes the action with logging asynchronous
         /// </summary>
         /// <param name="action"></param>
-        public async Task ExecuteSafeAsync (Func<Task> action)
+        public async Task ExecuteSafeAsync(Func<Task> action)
         {
-            _logger.Debug($"Start execution of step {typeof(T)}");
-
-            try
+            using (new Timer(_logger))
             {
-                await action();
-            }
-            catch(Exception ex)
-            {
-                _logger.Error(ex);
-                throw ex;
-            }
+                _logger.Debug($"Start execution of step {typeof(T)}");
 
-            _logger.Debug($"Finished execution of step {typeof(T)}");
+                try
+                {
+                    await action();
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex);
+                    throw ex;
+                }
+
+                _logger.Debug($"Finished execution of step {typeof(T)}");
+            }
         }
 
         /// <summary>
@@ -48,19 +51,22 @@ namespace DetectPublicApiChanges.Common
         /// <param name="action"></param>
         public void ExecuteSafe(Action action)
         {
-            _logger.Debug($"Start execution of step {typeof(T)}");
-
-            try
+            using (new Timer(_logger))
             {
-                action();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
-                throw ex;
-            }
+                _logger.Debug($"Start execution of step {typeof(T)}");
 
-            _logger.Debug($"Finished execution of step {typeof(T)}");
+                try
+                {
+                    action();
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex);
+                    throw ex;
+                }
+
+                _logger.Debug($"Finished execution of step {typeof(T)}");
+            }
         }
     }
 }

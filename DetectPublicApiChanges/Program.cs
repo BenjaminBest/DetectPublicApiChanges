@@ -1,11 +1,11 @@
-﻿using DetectPublicApiChanges.Extensions;
-using DetectPublicApiChanges.Interfaces;
-using Ninject;
-using System;
-using System.Reflection;
-using log4net;
+﻿using System;
 using System.IO;
+using System.Reflection;
 using DetectPublicApiChanges.Common;
+using DetectPublicApiChanges.Extensions;
+using DetectPublicApiChanges.Interfaces;
+using log4net;
+using Ninject;
 
 namespace DetectPublicApiChanges
 {
@@ -26,14 +26,14 @@ namespace DetectPublicApiChanges
             kernel.Load(Assembly.GetExecutingAssembly());
 
             //Logging
-            log4net.Config.XmlConfigurator.Configure();            
+            log4net.Config.XmlConfigurator.Configure();
 
             //Get options
             var options = kernel.Get<IOptions>();
             options.ParseFromArguments(args);
 
             //Enviroment
-            SetEnvironment(options,kernel.Get<IStore>(), kernel.Get<ILog>());
+            SetEnvironment(options, kernel.Get<IStore>(), kernel.Get<ILog>());
 
             //Run Job
             var registry = kernel.Get<IJobRegistry>();
@@ -55,7 +55,7 @@ namespace DetectPublicApiChanges
         /// <param name="options">The options.</param>
         /// <param name="store">The store.</param>
         /// <param name="logger">The logger.</param>
-        private static void SetEnvironment(IOptions options,IStore store, ILog logger)
+        private static void SetEnvironment(IOptions options, IStore store, ILog logger)
         {
             //Create working directory
             var name = Path.Combine(options.WorkPath, $@"{DateTime.Now.ToFileTime()}");
