@@ -64,7 +64,7 @@ A self test is build in and can be invoked by just running the EXE without a par
 Then the application tests the DetectPublicApiChanges solution itself and should generate a report without any changes, because it does compare the same version. Make sure the EXE is located in the bin folder and the solution is above that.
 
 Most likely unit test projects should not be recognized in the change detection process, therefore a regex filter exists. With the option
-> --regexFilter "/.Tests"
+> --regexFilter "\.Tests"
 
 a regex filter can be defined which filters all projects out that **matches**. The regex is analyzed in a non case sensitive way.
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text;
 using DetectPublicApiChanges.Analysis.Roslyn;
-using DetectPublicApiChanges.Analysis.StructureIndex;
 using DetectPublicApiChanges.Interfaces;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -14,6 +13,11 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
     public class MethodSyntaxNodeAnalyzer : ISyntaxNodeAnalyzer
     {
         /// <summary>
+        /// The index item factory
+        /// </summary>
+        private readonly IIndexItemFactory _indexItemFactory;
+
+        /// <summary>
         /// Gets the descriptor.
         /// </summary>
         /// <value>
@@ -24,6 +28,16 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
             DiagnosticId = "MethodMissing",
             Category = "Method"
         };
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MethodSyntaxNodeAnalyzer"/> class.
+        /// </summary>
+        /// <param name="indexItemFactory">The index item factory.</param>
+        public MethodSyntaxNodeAnalyzer(IIndexItemFactory indexItemFactory)
+        {
+            _indexItemFactory = indexItemFactory;
+        }
+
         /// <summary>
         /// Creates the item used in an index based on information gathered with the given <paramref name="syntaxNode"/>
         /// </summary>
@@ -36,7 +50,7 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
             if (node == null)
                 throw new ArgumentException("syntaxNode has not the correct type to be analyzed.");
 
-            return new IndexItem(CreateKey(node), syntaxNode, Descriptor.AddDescription($"The method {node.Identifier.ValueText} seems to be have been changed or removed"));
+            return _indexItemFactory.CreateItem(CreateKey(node), syntaxNode, Descriptor.AddDescription($"The method {node.Identifier.ValueText} seems to be have been changed or removed"));
         }
 
         /// <summary>

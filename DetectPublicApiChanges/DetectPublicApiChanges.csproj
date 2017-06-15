@@ -28,7 +28,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -227,9 +227,10 @@
     <Compile Include="Analysis\PublicMemberDetection\PublicMethodModifierDetector.cs" />
     <Compile Include="Analysis\PublicMemberDetection\PublicConstructorModifierDetector.cs" />
     <Compile Include="Analysis\PublicMemberDetection\PublicInterfaceModifierDetector.cs" />
-    <Compile Include="Analysis\Filters\ProjectRegexFilter.cs" />
+    <Compile Include="Analysis\Filters\ProjectRegexFilterExtensions.cs" />
     <Compile Include="Analysis\Roslyn\StructDeclarationSyntaxExtensions.cs" />
     <Compile Include="Analysis\Roslyn\PropertyDeclarationSyntaxExtensions.cs" />
+    <Compile Include="Analysis\StructureIndex\IndexItemFactory.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\DiagnosticAnalyzerDescriptor.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\MethodSyntaxNodeAnalyzer.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\InterfaceSyntaxNodeAnalyzer.cs" />
@@ -238,6 +239,7 @@
     <Compile Include="Analysis\SyntaxNodeAnalyzers\ClassSyntaxNodeAnalyzer.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\SyntaxNodeAnalyzerRepository.cs" />
     <Compile Include="Common\Timer.cs" />
+    <Compile Include="Interfaces\IIndexItemFactory.cs" />
     <Compile Include="Interfaces\IDiagnosticAnalyzerDescriptor.cs" />
     <Compile Include="Interfaces\IPublicClassModifierDetector.cs" />
     <Compile Include="Analysis\PublicMemberDetection\PublicClassModifierDetector.cs" />
@@ -252,7 +254,7 @@
     <Compile Include="Interfaces\IStructureIndexItem.cs" />
     <Compile Include="Interfaces\IStructureIndex.cs" />
     <Compile Include="Analysis\StructureIndex\StructureIndex.cs" />
-    <Compile Include="Analysis\StructureIndex\StructureIndexItem.cs" />
+    <Compile Include="Analysis\StructureIndex\IndexItem.cs" />
     <Compile Include="Analysis\Roslyn\InterfaceDeclarationSyntaxExtensions.cs" />
     <Compile Include="Analysis\Roslyn\MethodDeclarationSyntaxExtensions.cs" />
     <Compile Include="Analysis\Roslyn\ClassDeclarationSyntaxExtensions.cs" />

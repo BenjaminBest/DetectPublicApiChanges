@@ -102,6 +102,8 @@ namespace DetectPublicApiChanges.Report
             };
             interfaces.Count = interfaces.Items.Count;
 
+            navigation.Add(interfaces);
+
             //Structs
             var structs = new NavigationViewModel("Structs", GenerateAnchor("Structs"))
             {

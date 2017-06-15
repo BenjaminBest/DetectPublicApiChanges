@@ -93,6 +93,9 @@ namespace DetectPublicApiChanges.Steps
 
             solution.Result.Log();
 
+            _logger.Info($"Applying regex '{_options.RegexFilter}' to projects");
+
+
             foreach (var project in solution.Result.Projects.Filter(_options.RegexFilter))
             {
                 _logger.Info($"Analyzing project '{project.Name}'");

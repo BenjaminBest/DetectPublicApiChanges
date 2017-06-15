@@ -25,7 +25,7 @@ namespace DetectPublicApiChanges.Analysis.StructureIndex
         /// <value>
         /// The syntax node.
         /// </value>
-        public SyntaxNode SyntaxNode
+        public virtual SyntaxNode SyntaxNode
         {
             get;
         }

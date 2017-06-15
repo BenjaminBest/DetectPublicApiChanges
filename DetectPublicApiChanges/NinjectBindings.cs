@@ -67,6 +67,7 @@ namespace DetectPublicApiChanges
             //Indexing
             Bind<IStructureIndexComparator>().To<StructureIndexKeyComparator>();
             Bind<IStructureIndex>().To<StructureIndex>();
+            Bind<IIndexItemFactory>().To<IndexItemFactory>().InSingletonScope();
 
             //Jobs & Steps
             Bind<IJob>().To<DetectChangesJob>().WithConstructorArgument("steps", new List<IStep>
