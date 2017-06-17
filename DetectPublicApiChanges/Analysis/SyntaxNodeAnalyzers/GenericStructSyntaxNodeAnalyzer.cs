@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using DetectPublicApiChanges.Analysis.Roslyn;
 using DetectPublicApiChanges.Interfaces;
 using Microsoft.CodeAnalysis;
@@ -10,7 +9,7 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
     /// <summary>
     /// The ClassSyntaxNodeAnalyzer analyzes a specific information in the syntax tree and creates a unique key which represents this information.
     /// </summary>
-    public class GenericClassSyntaxNodeAnalyzer : ISyntaxNodeAnalyzer
+    public class GenericStructSyntaxNodeAnalyzer : ISyntaxNodeAnalyzer
     {
         /// <summary>
         /// The index item factory
@@ -25,15 +24,15 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// </value>
         private static IDiagnosticAnalyzerDescriptor Descriptor => new DiagnosticAnalyzerDescriptor()
         {
-            DiagnosticId = "GenericClassMissing",
-            Category = "Class"
+            DiagnosticId = "GenericStructMissing",
+            Category = "Struct"
         };
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClassSyntaxNodeAnalyzer"/> class.
+        /// Initializes a new instance of the <see cref="StructSyntaxNodeAnalyzer"/> class.
         /// </summary>
         /// <param name="indexItemFactory">The index item factory.</param>
-        public GenericClassSyntaxNodeAnalyzer(IIndexItemFactory indexItemFactory)
+        public GenericStructSyntaxNodeAnalyzer(IIndexItemFactory indexItemFactory)
         {
             _indexItemFactory = indexItemFactory;
         }
@@ -45,12 +44,12 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// <returns></returns>
         public IIndexItem CreateItem(SyntaxNode syntaxNode)
         {
-            var node = syntaxNode as ClassDeclarationSyntax;
+            var node = syntaxNode as StructDeclarationSyntax;
 
             if (node == null)
                 throw new ArgumentException("syntaxNode has not the correct type to be analyzed.");
 
-            return _indexItemFactory.CreateItem(CreateKey(node), syntaxNode, Descriptor.AddDescription($"The generic class {node.Identifier.ValueText} seems to be have been changed or removed"));
+            return _indexItemFactory.CreateItem(CreateKey(node), syntaxNode, Descriptor.AddDescription($"The generic struct {node.Identifier.ValueText} seems to be have been changed or removed"));
         }
 
         /// <summary>
@@ -62,9 +61,9 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// </returns>
         public bool IsDeclarationSyntaxTypeSupported(SyntaxNode syntaxNode)
         {
-            var item = syntaxNode as ClassDeclarationSyntax;
+            var item = syntaxNode as StructDeclarationSyntax;
 
-            return item != null && !item.Modifiers.Any(m => m.ValueText.Equals("partial")) && item.IsGeneric();
+            return item != null && item.IsGeneric();
         }
 
         /// <summary>
@@ -72,7 +71,7 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// </summary>
         /// <param name="syntax">The syntax.</param>
         /// <returns></returns>
-        private static string CreateKey(ClassDeclarationSyntax syntax)
+        private static string CreateKey(StructDeclarationSyntax syntax)
         {
             return syntax.GetFullName();
         }

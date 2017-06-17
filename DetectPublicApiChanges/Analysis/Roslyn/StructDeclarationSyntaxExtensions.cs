@@ -28,11 +28,24 @@ namespace DetectPublicApiChanges.Analysis.Roslyn
             if (!SyntaxNodeHelper.TryGetParentSyntax(syntax, out namespaceDeclarationSyntax))
                 return string.Empty;
 
+            var name = namespaceDeclarationSyntax.Name + "." + syntax.Identifier;
 
-            var namespaceName = namespaceDeclarationSyntax.Name.ToString();
-            var fullClassName = namespaceName + "." + syntax.Identifier;
+            if (syntax.IsGeneric())
+                name = name + syntax.TypeParameterList.ToFullString();
 
-            return fullClassName;
+            return name;
+        }
+
+        /// <summary>
+        /// Determines whether this instance is generic.
+        /// </summary>
+        /// <param name="syntax">The syntax.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified syntax is generic; otherwise, <c>false</c>.
+        /// </returns>
+        public static bool IsGeneric(this StructDeclarationSyntax syntax)
+        {
+            return syntax.TypeParameterList != null && syntax.TypeParameterList.Parameters.Count > 0;
         }
     }
 }

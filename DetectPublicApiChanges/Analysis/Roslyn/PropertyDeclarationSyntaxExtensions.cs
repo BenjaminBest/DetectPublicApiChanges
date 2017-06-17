@@ -20,6 +20,8 @@ namespace DetectPublicApiChanges.Analysis.Roslyn
                 parentNameSpace = classStructure.GetFullName();
             else if (syntax.Parent is InterfaceDeclarationSyntax)
                 parentNameSpace = ((InterfaceDeclarationSyntax)syntax.Parent).GetFullName();
+            else if (syntax.Parent is StructDeclarationSyntax)
+                parentNameSpace = ((StructDeclarationSyntax)syntax.Parent).GetFullName();
 
             return parentNameSpace + "." + syntax.Identifier;
         }

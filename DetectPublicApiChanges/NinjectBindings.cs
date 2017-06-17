@@ -55,6 +55,7 @@ namespace DetectPublicApiChanges
             Bind<IPublicModifierDetector>().To<PublicConstructorModifierDetector>();
             Bind<IPublicModifierDetector>().To<PublicMethodModifierDetector>();
             Bind<IPublicModifierDetector>().To<PublicPropertyModifierDetector>();
+            Bind<IPublicModifierDetector>().To<PublicStructModifierDetector>();
 
             //SyntaxNode analyzer
             Bind<ISyntaxNodeAnalyzer>().To<ClassSyntaxNodeAnalyzer>();
@@ -66,6 +67,8 @@ namespace DetectPublicApiChanges
             Bind<ISyntaxNodeAnalyzer>().To<ConstructorSyntaxNodeAnalyzer>();
             Bind<ISyntaxNodeAnalyzer>().To<StaticConstructorSyntaxNodeAnalyzer>();
             Bind<ISyntaxNodeAnalyzer>().To<PartialClassSyntaxNodeAnalyzer>();
+            Bind<ISyntaxNodeAnalyzer>().To<StructSyntaxNodeAnalyzer>();
+            Bind<ISyntaxNodeAnalyzer>().To<GenericStructSyntaxNodeAnalyzer>();
             Bind<ISyntaxNodeAnalyzerRepository>().To<SyntaxNodeAnalyzerRepository>();
 
             //Indexing

@@ -82,6 +82,16 @@ namespace DetectPublicApiChanges.Analysis.Roslyn
                     parent = interfaceNode.Parent;
                 }
 
+                if (syntaxNode is StructDeclarationSyntax)
+                {
+                    var structNode = syntaxNode as StructDeclarationSyntax;
+
+                    if (!structNode.Modifiers.Any(m => m.ValueText.Equals("public") || m.ValueText.Equals("protected")))
+                        return false;
+
+                    parent = structNode.Parent;
+                }
+
                 if (parent == null)
                     return true;
 

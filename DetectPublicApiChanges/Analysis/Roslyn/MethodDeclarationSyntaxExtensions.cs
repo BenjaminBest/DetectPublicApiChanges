@@ -35,14 +35,33 @@ namespace DetectPublicApiChanges.Analysis.Roslyn
         /// <returns></returns>
         public static string GetFullName(this MethodDeclarationSyntax syntax)
         {
-            var parentNameSpace = string.Empty;
+            var name = string.Empty;
             var classStructure = syntax.Parent as ClassDeclarationSyntax;
             if (classStructure != null)
-                parentNameSpace = classStructure.GetFullName();
+                name = classStructure.GetFullName();
             else if (syntax.Parent is InterfaceDeclarationSyntax)
-                parentNameSpace = ((InterfaceDeclarationSyntax)syntax.Parent).GetFullName();
+                name = ((InterfaceDeclarationSyntax)syntax.Parent).GetFullName();
+            else if (syntax.Parent is StructDeclarationSyntax)
+                name = ((StructDeclarationSyntax)syntax.Parent).GetFullName();
 
-            return parentNameSpace + "." + syntax.Identifier;
+            name = name + "." + syntax.Identifier;
+
+            if (syntax.IsGeneric())
+                name = name + syntax.TypeParameterList.ToFullString();
+
+            return name;
+        }
+
+        /// <summary>
+        /// Determines whether this instance is generic.
+        /// </summary>
+        /// <param name="syntax">The syntax.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified syntax is generic; otherwise, <c>false</c>.
+        /// </returns>
+        public static bool IsGeneric(this MethodDeclarationSyntax syntax)
+        {
+            return syntax.TypeParameterList != null && syntax.TypeParameterList.Parameters.Count > 0;
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using DetectPublicApiChanges.Analysis.Roslyn;
 using DetectPublicApiChanges.Interfaces;
 using Microsoft.CodeAnalysis;
@@ -74,12 +73,7 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// <returns></returns>
         private static string CreateKey(InterfaceDeclarationSyntax syntax)
         {
-            var key = new StringBuilder(syntax.GetFullName());
-
-            if (syntax.IsGeneric())
-                key.Append(syntax.TypeParameterList.ToFullString());
-
-            return key.ToString();
+            return syntax.GetFullName();
         }
     }
 }

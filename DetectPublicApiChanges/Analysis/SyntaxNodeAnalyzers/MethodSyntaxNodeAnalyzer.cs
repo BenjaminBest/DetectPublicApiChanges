@@ -62,7 +62,9 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// </returns>
         public bool IsDeclarationSyntaxTypeSupported(SyntaxNode syntaxNode)
         {
-            return syntaxNode is MethodDeclarationSyntax;
+            var item = syntaxNode as MethodDeclarationSyntax;
+
+            return item != null && !item.IsGeneric();
         }
 
         /// <summary>

@@ -34,6 +34,9 @@ namespace DetectPublicApiChanges.Analysis.Roslyn
             var namespaceName = namespaceDeclarationSyntax.Name.ToString();
             var fullClassName = namespaceName + "." + syntax.Identifier;
 
+            if (syntax.IsGeneric())
+                fullClassName = fullClassName + syntax.TypeParameterList.ToFullString();
+
             return fullClassName;
         }
 
