@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
 using DetectPublicApiChanges.Analysis.Roslyn;
 using DetectPublicApiChanges.Interfaces;
@@ -10,8 +11,13 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
     /// <summary>
     /// The ClassSyntaxNodeAnalyzer analyzes a specific information in the syntax tree and creates a unique key which represents this information.
     /// </summary>
-    public class ClassSyntaxNodeAnalyzer : ISyntaxNodeAnalyzer
+    public class PartialClassSyntaxNodeAnalyzer : ISyntaxNodeAnalyzer
     {
+        /// <summary>
+        /// Contains all found partial classes to make sure the class syntax itself is only reported once
+        /// </summary>
+        private static readonly Hashtable _partialClasses = new Hashtable();
+
         /// <summary>
         /// The index item factory
         /// </summary>
@@ -33,7 +39,7 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// Initializes a new instance of the <see cref="ClassSyntaxNodeAnalyzer"/> class.
         /// </summary>
         /// <param name="indexItemFactory">The index item factory.</param>
-        public ClassSyntaxNodeAnalyzer(IIndexItemFactory indexItemFactory)
+        public PartialClassSyntaxNodeAnalyzer(IIndexItemFactory indexItemFactory)
         {
             _indexItemFactory = indexItemFactory;
         }
@@ -50,6 +56,8 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
             if (node == null)
                 throw new ArgumentException("syntaxNode has not the correct type to be analyzed.");
 
+            AddPartial(node);
+
             return _indexItemFactory.CreateItem(CreateKey(node), syntaxNode, Descriptor.AddDescription($"The class {node.Identifier.ValueText} seems to be have been changed or removed"));
         }
 
@@ -64,7 +72,7 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         {
             var classSyntax = syntaxNode as ClassDeclarationSyntax;
 
-            return classSyntax != null && !classSyntax.Modifiers.Any(m => m.ValueText.ToLower().Equals("partial"));
+            return IsNewPartialClass(classSyntax);
         }
 
         /// <summary>
@@ -75,6 +83,34 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         private static string CreateKey(ClassDeclarationSyntax syntax)
         {
             return syntax.GetFullName();
+        }
+
+        /// <summary>
+        /// Determines whether [is new partial class] [the specified syntax].
+        /// </summary>
+        /// <param name="syntax">The syntax.</param>
+        /// <returns>
+        ///   <c>true</c> if [is new partial class] [the specified syntax]; otherwise, <c>false</c>.
+        /// </returns>
+        private bool IsNewPartialClass(ClassDeclarationSyntax syntax)
+        {
+            var isPartial = syntax != null && syntax.Modifiers.Any(m => m.ValueText.ToLower().Equals("partial"));
+
+            var id = CreateKey(syntax);
+
+            if (!isPartial)
+                return false;
+
+            return !_partialClasses.ContainsKey(id);
+        }
+
+        /// <summary>
+        /// Adds the partial.
+        /// </summary>
+        /// <param name="syntax">The syntax.</param>
+        private void AddPartial(ClassDeclarationSyntax syntax)
+        {
+            _partialClasses.Add(CreateKey(syntax), string.Empty);
         }
     }
 }
