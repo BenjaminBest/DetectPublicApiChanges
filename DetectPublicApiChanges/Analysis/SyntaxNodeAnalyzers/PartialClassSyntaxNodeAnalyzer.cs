@@ -31,7 +31,7 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// </value>
         private static IDiagnosticAnalyzerDescriptor Descriptor => new DiagnosticAnalyzerDescriptor()
         {
-            DiagnosticId = "ClassMissing",
+            DiagnosticId = "PartialClassMissing",
             Category = "Class"
         };
 
@@ -58,7 +58,7 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
 
             AddPartial(node);
 
-            return _indexItemFactory.CreateItem(CreateKey(node), syntaxNode, Descriptor.AddDescription($"The class {node.Identifier.ValueText} seems to be have been changed or removed"));
+            return _indexItemFactory.CreateItem(CreateKey(node), syntaxNode, Descriptor.AddDescription($"The partial class {node.Identifier.ValueText} seems to be have been changed or removed"));
         }
 
         /// <summary>
@@ -92,9 +92,9 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// <returns>
         ///   <c>true</c> if [is new partial class] [the specified syntax]; otherwise, <c>false</c>.
         /// </returns>
-        private bool IsNewPartialClass(ClassDeclarationSyntax syntax)
+        private static bool IsNewPartialClass(ClassDeclarationSyntax syntax)
         {
-            var isPartial = syntax != null && syntax.Modifiers.Any(m => m.ValueText.ToLower().Equals("partial"));
+            var isPartial = syntax != null && syntax.Modifiers.Any(m => m.ValueText.Equals("partial"));
 
             var id = CreateKey(syntax);
 
@@ -108,7 +108,7 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// Adds the partial.
         /// </summary>
         /// <param name="syntax">The syntax.</param>
-        private void AddPartial(ClassDeclarationSyntax syntax)
+        private static void AddPartial(ClassDeclarationSyntax syntax)
         {
             _partialClasses.Add(CreateKey(syntax), string.Empty);
         }

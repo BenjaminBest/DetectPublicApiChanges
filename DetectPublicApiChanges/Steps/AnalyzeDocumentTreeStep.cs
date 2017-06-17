@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using DetectPublicApiChanges.Analysis.Filters;
 using DetectPublicApiChanges.Analysis.Roslyn;
 using DetectPublicApiChanges.Analysis.StructureIndex;
@@ -36,6 +37,8 @@ namespace DetectPublicApiChanges.Steps
         /// </summary>
         private readonly ISyntaxNodeAnalyzerRepository _syntaxNodeRepository;
 
+        private readonly IEnumerable<IPublicModifierDetector> _modifierDetectors;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AnalyzeDocumentTreeStep" /> class.
         /// </summary>
@@ -43,17 +46,20 @@ namespace DetectPublicApiChanges.Steps
         /// <param name="store">The store.</param>
         /// <param name="options">The options.</param>
         /// <param name="syntaxNodeRepository">The syntax node repository.</param>
+        /// <param name="modifierDetectors">The modifier detectors.</param>
         public AnalyzeDocumentTreeStep(
             ILog logger,
             IStore store,
             IOptions options,
-            ISyntaxNodeAnalyzerRepository syntaxNodeRepository)
+            ISyntaxNodeAnalyzerRepository syntaxNodeRepository,
+            IEnumerable<IPublicModifierDetector> modifierDetectors)
             : base(logger)
         {
             _logger = logger;
             _store = store;
             _options = options;
             _syntaxNodeRepository = syntaxNodeRepository;
+            _modifierDetectors = modifierDetectors;
         }
 
         /// <summary>
@@ -121,6 +127,11 @@ namespace DetectPublicApiChanges.Steps
                         {
                             if (_syntaxNodeRepository.IsSyntaxDeclarationTypeSupported(item))
                             {
+                                //Filter non public items
+                                if (!_modifierDetectors.Any(m => m.IsPublic(item)))
+                                    continue;
+
+
                                 //TODO: Project should not be writable, should be automatically determined
                                 var indexItem = _syntaxNodeRepository.Analyze(item);
                                 indexItem.Project = project;

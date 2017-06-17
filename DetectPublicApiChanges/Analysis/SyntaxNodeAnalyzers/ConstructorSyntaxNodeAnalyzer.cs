@@ -62,7 +62,9 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// </returns>
         public bool IsDeclarationSyntaxTypeSupported(SyntaxNode syntaxNode)
         {
-            return syntaxNode is ConstructorDeclarationSyntax;
+            var ctor = syntaxNode as ConstructorDeclarationSyntax;
+
+            return ctor != null && !ctor.IsStatic();
         }
 
         /// <summary>

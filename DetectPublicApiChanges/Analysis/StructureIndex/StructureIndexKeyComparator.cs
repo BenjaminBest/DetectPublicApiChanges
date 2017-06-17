@@ -49,7 +49,7 @@ namespace DetectPublicApiChanges.Analysis.StructureIndex
                 //Filter non public structures
                 if (!_modifierDetectors.Any(m => m.IsPublic(sourceIndexItem.Value.SyntaxNode)))
                 {
-                    _logger.Debug($"Index item '{sourceIndexItem.Key}' of type '{sourceIndexItem.Value.GetType()} is not public')");
+                    _logger.Warn($"Index item '{sourceIndexItem.Key}' of type '{sourceIndexItem.Value.GetType()} is not public')");
                     continue;
                 }
 

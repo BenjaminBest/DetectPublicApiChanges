@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using System.Text;
 using DetectPublicApiChanges.Analysis.Roslyn;
 using DetectPublicApiChanges.Interfaces;
 using Microsoft.CodeAnalysis;
@@ -8,9 +8,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
 {
     /// <summary>
-    /// The ClassSyntaxNodeAnalyzer analyzes a specific information in the syntax tree and creates a unique key which represents this information.
+    /// The ConstrucutorSyntaxNodeAnalyzer analyzes a specific information in the syntax tree and creates a unique key which represents this information.
     /// </summary>
-    public class ClassSyntaxNodeAnalyzer : ISyntaxNodeAnalyzer
+    public class StaticConstructorSyntaxNodeAnalyzer : ISyntaxNodeAnalyzer
     {
         /// <summary>
         /// The index item factory
@@ -25,15 +25,15 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// </value>
         private static IDiagnosticAnalyzerDescriptor Descriptor => new DiagnosticAnalyzerDescriptor()
         {
-            DiagnosticId = "ClassMissing",
-            Category = "Class"
+            DiagnosticId = "StaticCtorMissing",
+            Category = "Constructor"
         };
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClassSyntaxNodeAnalyzer"/> class.
+        /// Initializes a new instance of the <see cref="ConstructorSyntaxNodeAnalyzer"/> class.
         /// </summary>
         /// <param name="indexItemFactory">The index item factory.</param>
-        public ClassSyntaxNodeAnalyzer(IIndexItemFactory indexItemFactory)
+        public StaticConstructorSyntaxNodeAnalyzer(IIndexItemFactory indexItemFactory)
         {
             _indexItemFactory = indexItemFactory;
         }
@@ -45,12 +45,12 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// <returns></returns>
         public IIndexItem CreateItem(SyntaxNode syntaxNode)
         {
-            var node = syntaxNode as ClassDeclarationSyntax;
+            var node = syntaxNode as ConstructorDeclarationSyntax;
 
             if (node == null)
                 throw new ArgumentException("syntaxNode has not the correct type to be analyzed.");
 
-            return _indexItemFactory.CreateItem(CreateKey(node), syntaxNode, Descriptor.AddDescription($"The class {node.Identifier.ValueText} seems to be have been changed or removed"));
+            return _indexItemFactory.CreateItem(CreateKey(node), syntaxNode, Descriptor.AddDescription($"The static ctor {node.Identifier.ValueText} seems to be have been changed or removed"));
         }
 
         /// <summary>
@@ -62,9 +62,9 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// </returns>
         public bool IsDeclarationSyntaxTypeSupported(SyntaxNode syntaxNode)
         {
-            var classSyntax = syntaxNode as ClassDeclarationSyntax;
+            var ctor = syntaxNode as ConstructorDeclarationSyntax;
 
-            return classSyntax != null && !classSyntax.Modifiers.Any(m => m.ValueText.Equals("partial"));
+            return ctor != null && ctor.IsStatic();
         }
 
         /// <summary>
@@ -72,9 +72,18 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// </summary>
         /// <param name="syntax">The syntax.</param>
         /// <returns></returns>
-        private static string CreateKey(ClassDeclarationSyntax syntax)
+        private static string CreateKey(ConstructorDeclarationSyntax syntax)
         {
-            return syntax.GetFullName();
+            var key = new StringBuilder(syntax.IsStatic() ? "static" : string.Empty);
+            key.Append(syntax.GetFullName());
+
+            foreach (var param in syntax.GetParameters())
+            {
+                key.Append(param.Identifier.ValueText);
+                key.Append(param.Type);
+            }
+
+            return key.ToString();
         }
     }
 }
