@@ -62,9 +62,9 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// </returns>
         public bool IsDeclarationSyntaxTypeSupported(SyntaxNode syntaxNode)
         {
-            var classSyntax = syntaxNode as ClassDeclarationSyntax;
+            var item = syntaxNode as ClassDeclarationSyntax;
 
-            return classSyntax != null && !classSyntax.Modifiers.Any(m => m.ValueText.Equals("partial"));
+            return item != null && !item.Modifiers.Any(m => m.ValueText.Equals("partial")) && !item.IsGeneric();
         }
 
         /// <summary>

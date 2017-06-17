@@ -128,9 +128,8 @@ namespace DetectPublicApiChanges.Steps
                             if (_syntaxNodeRepository.IsSyntaxDeclarationTypeSupported(item))
                             {
                                 //Filter non public items
-                                if (!_modifierDetectors.Any(m => m.IsPublic(item)))
+                                if (!_modifierDetectors.Any(m => m.IsHierarchyPublic(item)))
                                     continue;
-
 
                                 //TODO: Project should not be writable, should be automatically determined
                                 var indexItem = _syntaxNodeRepository.Analyze(item);

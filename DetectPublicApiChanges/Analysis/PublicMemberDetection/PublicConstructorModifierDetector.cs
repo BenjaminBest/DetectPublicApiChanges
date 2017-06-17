@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using DetectPublicApiChanges.Analysis.Roslyn;
 using DetectPublicApiChanges.Interfaces;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -6,8 +7,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace DetectPublicApiChanges.Analysis.PublicMemberDetection
 {
     /// <summary>
-    /// The PublicConstructorModifierDetector detects if the structure is of type <see cref="ConstructorDeclarationSyntax"/> and is public
+    /// The PublicConstructorModifierDetector detects if the structure is of type <see cref="ConstructorDeclarationSyntax" /> and is public
     /// </summary>
+    /// <seealso cref="IPublicModifierDetector" />
     public class PublicConstructorModifierDetector : IPublicModifierDetector
     {
         /// <summary>
@@ -21,7 +23,17 @@ namespace DetectPublicApiChanges.Analysis.PublicMemberDetection
         {
             var item = syntaxNode as ConstructorDeclarationSyntax;
 
-            return item != null && item.Modifiers.Select(m => m.ValueText).Any(m => m.ToLower().Equals("public") || m.ToLower().Equals("protected"));
+            return item != null && item.Modifiers.Select(m => m.ValueText).Any(m => m.Equals("public") || m.Equals("protected"));
+        }
+
+        /// <summary>
+        /// Determines weather all parents of this node are public.
+        /// </summary>
+        /// <param name="syntaxNode">The syntax node.</param>
+        /// <returns></returns>
+        public bool IsHierarchyPublic(SyntaxNode syntaxNode)
+        {
+            return IsPublic(syntaxNode) && SyntaxNodeHelper.IsHierarchyPublic(syntaxNode.Parent);
         }
     }
 }

@@ -47,16 +47,16 @@ namespace DetectPublicApiChanges.Analysis.StructureIndex
             foreach (var sourceIndexItem in sourceIndex.Items)
             {
                 //Filter non public structures
-                if (!_modifierDetectors.Any(m => m.IsPublic(sourceIndexItem.Value.SyntaxNode)))
+                if (!_modifierDetectors.Any(m => m.IsHierarchyPublic(sourceIndexItem.Value.SyntaxNode)))
                 {
-                    _logger.Warn($"Index item '{sourceIndexItem.Key}' of type '{sourceIndexItem.Value.GetType()} is not public')");
+                    _logger.Warn($"Index item '{sourceIndexItem.Key}' of type '{sourceIndexItem.Value.SyntaxNode.GetType()} is not public')");
                     continue;
                 }
 
                 if (!targetIndex.Exists(sourceIndexItem.Key))
                 {
                     differences.Add(sourceIndexItem.Value);
-                    _logger.Warn($"The index item with key '{sourceIndexItem.Key}' of type '{sourceIndexItem.Value.GetType()}' was not found");
+                    _logger.Warn($"The index item with key '{sourceIndexItem.Key}' of type '{sourceIndexItem.Value.SyntaxNode.GetType()}' was not found");
                 }
             }
 

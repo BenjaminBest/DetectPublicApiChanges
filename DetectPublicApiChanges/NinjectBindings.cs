@@ -58,10 +58,13 @@ namespace DetectPublicApiChanges
 
             //SyntaxNode analyzer
             Bind<ISyntaxNodeAnalyzer>().To<ClassSyntaxNodeAnalyzer>();
+            Bind<ISyntaxNodeAnalyzer>().To<GenericClassSyntaxNodeAnalyzer>();
             Bind<ISyntaxNodeAnalyzer>().To<InterfaceSyntaxNodeAnalyzer>();
+            Bind<ISyntaxNodeAnalyzer>().To<GenericInterfaceSyntaxNodeAnalyzer>();
             Bind<ISyntaxNodeAnalyzer>().To<PropertySyntaxNodeAnalyzer>();
             Bind<ISyntaxNodeAnalyzer>().To<MethodSyntaxNodeAnalyzer>();
             Bind<ISyntaxNodeAnalyzer>().To<ConstructorSyntaxNodeAnalyzer>();
+            Bind<ISyntaxNodeAnalyzer>().To<StaticConstructorSyntaxNodeAnalyzer>();
             Bind<ISyntaxNodeAnalyzer>().To<PartialClassSyntaxNodeAnalyzer>();
             Bind<ISyntaxNodeAnalyzerRepository>().To<SyntaxNodeAnalyzerRepository>();
 

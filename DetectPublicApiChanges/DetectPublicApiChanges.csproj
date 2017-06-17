@@ -231,6 +231,8 @@
     <Compile Include="Analysis\Roslyn\StructDeclarationSyntaxExtensions.cs" />
     <Compile Include="Analysis\Roslyn\PropertyDeclarationSyntaxExtensions.cs" />
     <Compile Include="Analysis\StructureIndex\IndexItemFactory.cs" />
+    <Compile Include="Analysis\SyntaxNodeAnalyzers\GenericClassSyntaxNodeAnalyzer.cs" />
+    <Compile Include="Analysis\SyntaxNodeAnalyzers\GenericInterfaceSyntaxNodeAnalyzer.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\StaticConstructorSyntaxNodeAnalyzer.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\PartialClassSyntaxNodeAnalyzer.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\DiagnosticAnalyzerDescriptor.cs" />

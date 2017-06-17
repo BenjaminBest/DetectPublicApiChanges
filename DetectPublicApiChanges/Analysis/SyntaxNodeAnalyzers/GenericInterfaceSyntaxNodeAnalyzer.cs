@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using DetectPublicApiChanges.Analysis.Roslyn;
 using DetectPublicApiChanges.Interfaces;
 using Microsoft.CodeAnalysis;
@@ -9,7 +10,7 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
     /// <summary>
     /// The InterfaceSyntaxNodeAnalyzer analyzes a specific information in the syntax tree and creates a unique key which represents this information.
     /// </summary>
-    public class InterfaceSyntaxNodeAnalyzer : ISyntaxNodeAnalyzer
+    public class GenericInterfaceSyntaxNodeAnalyzer : ISyntaxNodeAnalyzer
     {
         /// <summary>
         /// The index item factory
@@ -24,7 +25,7 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// </value>
         private static IDiagnosticAnalyzerDescriptor Descriptor => new DiagnosticAnalyzerDescriptor()
         {
-            DiagnosticId = "InterfaceMissing",
+            DiagnosticId = "GenericInterfaceMissing",
             Category = "Interface"
         };
 
@@ -32,7 +33,7 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// Initializes a new instance of the <see cref="InterfaceSyntaxNodeAnalyzer"/> class.
         /// </summary>
         /// <param name="indexItemFactory">The index item factory.</param>
-        public InterfaceSyntaxNodeAnalyzer(IIndexItemFactory indexItemFactory)
+        public GenericInterfaceSyntaxNodeAnalyzer(IIndexItemFactory indexItemFactory)
         {
             _indexItemFactory = indexItemFactory;
         }
@@ -49,7 +50,7 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
             if (node == null)
                 throw new ArgumentException("syntaxNode has not the correct type to be analyzed.");
 
-            return _indexItemFactory.CreateItem(CreateKey(node), syntaxNode, Descriptor.AddDescription($"The interface {node.Identifier.ValueText} seems to be have been changed or removed"));
+            return _indexItemFactory.CreateItem(CreateKey(node), syntaxNode, Descriptor.AddDescription($"The generic interface {node.Identifier.ValueText} seems to be have been changed or removed"));
         }
 
         /// <summary>
@@ -63,7 +64,7 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         {
             var item = syntaxNode as InterfaceDeclarationSyntax;
 
-            return item != null && !item.IsGeneric();
+            return item != null && item.IsGeneric();
         }
 
         /// <summary>
@@ -73,7 +74,12 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// <returns></returns>
         private static string CreateKey(InterfaceDeclarationSyntax syntax)
         {
-            return syntax.GetFullName();
+            var key = new StringBuilder(syntax.GetFullName());
+
+            if (syntax.IsGeneric())
+                key.Append(syntax.TypeParameterList.ToFullString());
+
+            return key.ToString();
         }
     }
 }

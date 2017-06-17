@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Text;
 using DetectPublicApiChanges.Analysis.Roslyn;
 using DetectPublicApiChanges.Interfaces;
 using Microsoft.CodeAnalysis;
@@ -7,9 +9,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
 {
     /// <summary>
-    /// The InterfaceSyntaxNodeAnalyzer analyzes a specific information in the syntax tree and creates a unique key which represents this information.
+    /// The ClassSyntaxNodeAnalyzer analyzes a specific information in the syntax tree and creates a unique key which represents this information.
     /// </summary>
-    public class InterfaceSyntaxNodeAnalyzer : ISyntaxNodeAnalyzer
+    public class GenericClassSyntaxNodeAnalyzer : ISyntaxNodeAnalyzer
     {
         /// <summary>
         /// The index item factory
@@ -24,15 +26,15 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// </value>
         private static IDiagnosticAnalyzerDescriptor Descriptor => new DiagnosticAnalyzerDescriptor()
         {
-            DiagnosticId = "InterfaceMissing",
-            Category = "Interface"
+            DiagnosticId = "GenericClassMissing",
+            Category = "Class"
         };
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InterfaceSyntaxNodeAnalyzer"/> class.
+        /// Initializes a new instance of the <see cref="ClassSyntaxNodeAnalyzer"/> class.
         /// </summary>
         /// <param name="indexItemFactory">The index item factory.</param>
-        public InterfaceSyntaxNodeAnalyzer(IIndexItemFactory indexItemFactory)
+        public GenericClassSyntaxNodeAnalyzer(IIndexItemFactory indexItemFactory)
         {
             _indexItemFactory = indexItemFactory;
         }
@@ -44,12 +46,12 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// <returns></returns>
         public IIndexItem CreateItem(SyntaxNode syntaxNode)
         {
-            var node = syntaxNode as InterfaceDeclarationSyntax;
+            var node = syntaxNode as ClassDeclarationSyntax;
 
             if (node == null)
                 throw new ArgumentException("syntaxNode has not the correct type to be analyzed.");
 
-            return _indexItemFactory.CreateItem(CreateKey(node), syntaxNode, Descriptor.AddDescription($"The interface {node.Identifier.ValueText} seems to be have been changed or removed"));
+            return _indexItemFactory.CreateItem(CreateKey(node), syntaxNode, Descriptor.AddDescription($"The generic class {node.Identifier.ValueText} seems to be have been changed or removed"));
         }
 
         /// <summary>
@@ -61,9 +63,9 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// </returns>
         public bool IsDeclarationSyntaxTypeSupported(SyntaxNode syntaxNode)
         {
-            var item = syntaxNode as InterfaceDeclarationSyntax;
+            var item = syntaxNode as ClassDeclarationSyntax;
 
-            return item != null && !item.IsGeneric();
+            return item != null && !item.Modifiers.Any(m => m.ValueText.Equals("partial")) && item.IsGeneric();
         }
 
         /// <summary>
@@ -71,9 +73,14 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// </summary>
         /// <param name="syntax">The syntax.</param>
         /// <returns></returns>
-        private static string CreateKey(InterfaceDeclarationSyntax syntax)
+        private static string CreateKey(ClassDeclarationSyntax syntax)
         {
-            return syntax.GetFullName();
+            var key = new StringBuilder(syntax.GetFullName());
+
+            if (syntax.IsGeneric())
+                key.Append(syntax.TypeParameterList.ToFullString());
+
+            return key.ToString();
         }
     }
 }

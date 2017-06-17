@@ -15,5 +15,12 @@ namespace DetectPublicApiChanges.Interfaces
         ///   <c>true</c> if the specified structure is public; otherwise, <c>false</c>.
         /// </returns>
         bool IsPublic(SyntaxNode syntaxNode);
+
+        /// <summary>
+        /// Determines weather all parents of this node are public.
+        /// </summary>
+        /// <param name="syntaxNode">The syntax node.</param>
+        /// <returns></returns>
+        bool IsHierarchyPublic(SyntaxNode syntaxNode);
     }
 }

@@ -64,5 +64,17 @@ namespace DetectPublicApiChanges.Analysis.Roslyn
 
             return methods;
         }
+
+        /// <summary>
+        /// Determines whether this instance is generic.
+        /// </summary>
+        /// <param name="syntax">The syntax.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified syntax is generic; otherwise, <c>false</c>.
+        /// </returns>
+        public static bool IsGeneric(this InterfaceDeclarationSyntax syntax)
+        {
+            return syntax.TypeParameterList != null && syntax.TypeParameterList.Parameters.Count > 0;
+        }
     }
 }
