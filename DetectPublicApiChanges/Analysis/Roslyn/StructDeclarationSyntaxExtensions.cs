@@ -28,12 +28,7 @@ namespace DetectPublicApiChanges.Analysis.Roslyn
             if (!SyntaxNodeHelper.TryGetParentSyntax(syntax, out namespaceDeclarationSyntax))
                 return string.Empty;
 
-            var name = namespaceDeclarationSyntax.Name + "." + syntax.Identifier;
-
-            if (syntax.IsGeneric())
-                name = name + syntax.TypeParameterList.ToFullString();
-
-            return name;
+            return namespaceDeclarationSyntax.Name + "." + syntax.Identifier;
         }
 
         /// <summary>

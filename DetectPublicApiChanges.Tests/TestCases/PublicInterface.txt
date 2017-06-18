@@ -1,0 +1,9 @@
+﻿namespace Test.TestCases
+{
+    public interface ITestInterface
+    {
+        bool TestMethod(string argument);
+
+        bool TestProperty { get; set; }
+    }
+}

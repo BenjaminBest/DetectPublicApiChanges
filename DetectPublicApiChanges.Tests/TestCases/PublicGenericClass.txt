@@ -1,0 +1,22 @@
+﻿namespace Test.TestCases
+{
+    public class TestClass<TGeneric> where TGeneric : class
+    {
+        public TestClass()
+        {
+
+        }
+
+        public bool TestMethod(TGeneric argument)
+        {
+            return true;
+        }
+
+        public TGeneric TestMethodGeneric(string argument)
+        {
+            return default(TGeneric);
+        }
+
+        public bool TestProperty { get; set; }
+    }
+}

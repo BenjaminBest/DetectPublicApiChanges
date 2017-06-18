@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using Microsoft.CodeAnalysis;
 
 namespace DetectPublicApiChanges.Analysis.Roslyn
 {
@@ -47,58 +45,6 @@ namespace DetectPublicApiChanges.Analysis.Roslyn
             catch
             {
                 return false;
-            }
-        }
-
-        /// <summary>
-        /// Determines whether this and parent nodes are public.
-        /// </summary>
-        /// <param name="syntaxNode">The syntax node.</param>
-        /// <returns>
-        ///   <c>true</c> if this and parent nodes are public; otherwise, <c>false</c>.
-        /// </returns>
-        public static bool IsHierarchyPublic(SyntaxNode syntaxNode)
-        {
-            while (true)
-            {
-                SyntaxNode parent = null;
-                if (syntaxNode is ClassDeclarationSyntax)
-                {
-                    var classNode = syntaxNode as ClassDeclarationSyntax;
-
-                    if (!classNode.Modifiers.Any(m => m.ValueText.Equals("public") || m.ValueText.Equals("protected")))
-                        return false;
-
-                    parent = classNode.Parent;
-                }
-
-                if (syntaxNode is InterfaceDeclarationSyntax)
-                {
-                    var interfaceNode = syntaxNode as InterfaceDeclarationSyntax;
-
-                    if (!interfaceNode.Modifiers.Any(m => m.ValueText.Equals("public") || m.ValueText.Equals("protected")))
-                        return false;
-
-                    parent = interfaceNode.Parent;
-                }
-
-                if (syntaxNode is StructDeclarationSyntax)
-                {
-                    var structNode = syntaxNode as StructDeclarationSyntax;
-
-                    if (!structNode.Modifiers.Any(m => m.ValueText.Equals("public") || m.ValueText.Equals("protected")))
-                        return false;
-
-                    parent = structNode.Parent;
-                }
-
-                if (parent == null)
-                    return true;
-
-                if (parent is NamespaceDeclarationSyntax)
-                    return true;
-
-                syntaxNode = parent;
             }
         }
     }

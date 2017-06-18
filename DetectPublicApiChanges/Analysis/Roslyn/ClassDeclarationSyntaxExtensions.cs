@@ -10,16 +10,6 @@ namespace DetectPublicApiChanges.Analysis.Roslyn
     public static class ClassDeclarationSyntaxExtensions
     {
         /// <summary>
-        /// Gets the identifier.
-        /// </summary>
-        /// <param name="syntax">The syntax.</param>
-        /// <returns></returns>
-        public static string GetId(this ClassDeclarationSyntax syntax)
-        {
-            return syntax.Identifier.ValueText;
-        }
-
-        /// <summary>
         /// Gets the name.
         /// </summary>
         /// <param name="syntax">The syntax.</param>
@@ -42,9 +32,6 @@ namespace DetectPublicApiChanges.Analysis.Roslyn
 
             var namespaceName = namespaceDeclarationSyntax.Name.ToString();
             var fullClassName = namespaceName + "." + syntax.Identifier;
-
-            if (syntax.IsGeneric())
-                fullClassName = fullClassName + syntax.TypeParameterList.ToFullString();
 
             return fullClassName;
         }

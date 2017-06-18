@@ -175,14 +175,29 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Analysis\Filters\ProjectRegexFilterExtensionsTests.cs" />
+    <Compile Include="Analysis\Roslyn\SyntaxNodeHelperTests.cs" />
+    <Compile Include="Analysis\SyntaxNodeAnalyzers\ClassSyntaxNodeAnalyzerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestCases\Helpers\MockCreator.cs" />
+    <Compile Include="TestCases\Helpers\SyntaxNodeTestHelper.cs" />
+    <Compile Include="TestCases\Helpers\SyntaxTreeTestHelper.cs" />
+    <Compile Include="TestCases\TestCase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Analysis\PublicMemberDetection\" />
+    <Folder Include="Analysis\StructureIndex\" />
     <Folder Include="Common\" />
+    <Folder Include="Extensions\" />
+    <Folder Include="Interfaces\" />
+    <Folder Include="Jobs\" />
+    <Folder Include="Report\Models\" />
+    <Folder Include="Report\Mvc\" />
+    <Folder Include="Steps\" />
+    <Folder Include="Views\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DetectPublicApiChanges\DetectPublicApiChanges.csproj">
@@ -193,6 +208,39 @@
   <ItemGroup>
     <Analyzer Include="..\DetectPublicApiChanges\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\DetectPublicApiChanges\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestCases\PublicClass.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestCases\InternalClass.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestCases\InternalSealedClass.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestCases\PublicStaticClass.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestCases\PrivateClassInsidePublicClass.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestCases\NestedPublicClasses.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestCases\PublicStruct.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestCases\InternalClassInsidePublicClass.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestCases\PublicPartialClass.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestCases\PublicGenericClass.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestCases\PublicInterface.txt" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

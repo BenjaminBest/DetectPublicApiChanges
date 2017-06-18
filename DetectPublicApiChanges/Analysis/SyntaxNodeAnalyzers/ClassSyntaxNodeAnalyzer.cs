@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using DetectPublicApiChanges.Analysis.Roslyn;
+using DetectPublicApiChanges.Extensions;
 using DetectPublicApiChanges.Interfaces;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -74,7 +75,7 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// <returns></returns>
         private static string CreateKey(ClassDeclarationSyntax syntax)
         {
-            return syntax.GetFullName();
+            return syntax.As<SyntaxNode>().GetFullName();
         }
     }
 }

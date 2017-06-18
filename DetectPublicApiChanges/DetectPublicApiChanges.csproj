@@ -231,6 +231,7 @@
     <Compile Include="Analysis\Filters\ProjectRegexFilterExtensions.cs" />
     <Compile Include="Analysis\Roslyn\StructDeclarationSyntaxExtensions.cs" />
     <Compile Include="Analysis\Roslyn\PropertyDeclarationSyntaxExtensions.cs" />
+    <Compile Include="Analysis\Roslyn\SyntaxNodeExtensions.cs" />
     <Compile Include="Analysis\StructureIndex\IndexItemFactory.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\GenericStructSyntaxNodeAnalyzer.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\StructSyntaxNodeAnalyzer.cs" />
@@ -247,6 +248,7 @@
     <Compile Include="Analysis\SyntaxNodeAnalyzers\ClassSyntaxNodeAnalyzer.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\SyntaxNodeAnalyzerRepository.cs" />
     <Compile Include="Common\Timer.cs" />
+    <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Interfaces\IIndexItemFactory.cs" />
     <Compile Include="Interfaces\IDiagnosticAnalyzerDescriptor.cs" />
     <Compile Include="Interfaces\IPublicClassModifierDetector.cs" />

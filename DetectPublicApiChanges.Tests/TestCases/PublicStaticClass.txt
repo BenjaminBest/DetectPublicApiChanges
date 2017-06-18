@@ -1,0 +1,17 @@
+﻿namespace Test.TestCases
+{
+    public static class TestClass
+    {
+        static TestClass()
+        {
+
+        }
+
+        public static bool TestMethod(string argument)
+        {
+            return true;
+        }
+
+        public static bool TestProperty { get; set; }
+    }
+}

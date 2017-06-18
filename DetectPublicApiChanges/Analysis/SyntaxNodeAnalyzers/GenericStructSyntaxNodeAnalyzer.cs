@@ -73,7 +73,7 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// <returns></returns>
         private static string CreateKey(StructDeclarationSyntax syntax)
         {
-            return syntax.GetFullName();
+            return syntax.GetFullName() + syntax.TypeParameterList.ToFullString();
         }
     }
 }

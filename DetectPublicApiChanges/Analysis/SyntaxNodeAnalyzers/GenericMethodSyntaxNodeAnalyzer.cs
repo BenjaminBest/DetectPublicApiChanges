@@ -77,6 +77,7 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
             var key = new StringBuilder(syntax.GetFullName());
 
             key.Append(syntax.ReturnType);
+            key.Append(syntax.TypeParameterList.ToFullString());
 
             foreach (var param in syntax.GetParameters())
             {

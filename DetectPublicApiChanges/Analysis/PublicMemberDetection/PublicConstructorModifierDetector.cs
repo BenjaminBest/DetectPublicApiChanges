@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using DetectPublicApiChanges.Analysis.Roslyn;
+﻿using DetectPublicApiChanges.Analysis.Roslyn;
 using DetectPublicApiChanges.Interfaces;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -23,17 +22,7 @@ namespace DetectPublicApiChanges.Analysis.PublicMemberDetection
         {
             var item = syntaxNode as ConstructorDeclarationSyntax;
 
-            return item != null && item.Modifiers.Select(m => m.ValueText).Any(m => m.Equals("public") || m.Equals("protected"));
-        }
-
-        /// <summary>
-        /// Determines weather all parents of this node are public.
-        /// </summary>
-        /// <param name="syntaxNode">The syntax node.</param>
-        /// <returns></returns>
-        public bool IsHierarchyPublic(SyntaxNode syntaxNode)
-        {
-            return IsPublic(syntaxNode) && SyntaxNodeHelper.IsHierarchyPublic(syntaxNode.Parent);
+            return item != null && syntaxNode.IsHierarchyPublic();
         }
     }
 }

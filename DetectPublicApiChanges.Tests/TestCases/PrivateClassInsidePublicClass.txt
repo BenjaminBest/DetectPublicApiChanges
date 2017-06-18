@@ -1,0 +1,37 @@
+﻿namespace Test.TestCases
+{
+    public class TestClass
+    {
+        static TestClass()
+        {
+
+        }
+
+        public TestClass()
+        {
+
+        }
+
+        public static bool TestMethod(string argument)
+        {
+            return true;
+        }
+
+        public static bool TestProperty { get; set; }
+
+        private class PrivateTestClass
+        {
+            public PrivateTestClass()
+            {
+
+            }
+
+            public static bool PrivateTestMethod(string argument)
+            {
+                return true;
+            }
+
+            public static bool PrivateTestProperty { get; set; }
+        }
+    }
+}

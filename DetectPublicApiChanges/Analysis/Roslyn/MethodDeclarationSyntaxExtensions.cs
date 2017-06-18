@@ -46,9 +46,6 @@ namespace DetectPublicApiChanges.Analysis.Roslyn
 
             name = name + "." + syntax.Identifier;
 
-            if (syntax.IsGeneric())
-                name = name + syntax.TypeParameterList.ToFullString();
-
             return name;
         }
 
