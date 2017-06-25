@@ -74,14 +74,14 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// <returns></returns>
         private static string CreateKey(MethodDeclarationSyntax syntax)
         {
-            var key = new StringBuilder(syntax.GetFullName());
+            var key = new StringBuilder(syntax.ReturnType.ToString());
 
-            key.Append(syntax.ReturnType);
+            key.Append(syntax.GetFullName());
 
             foreach (var param in syntax.GetParameters())
             {
-                key.Append(param.Identifier.ValueText);
                 key.Append(param.Type);
+                key.Append(param.Identifier.ValueText);
             }
 
             return key.ToString();

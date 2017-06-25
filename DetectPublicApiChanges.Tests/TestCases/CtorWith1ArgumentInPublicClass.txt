@@ -1,0 +1,10 @@
+﻿namespace Test.TestCases
+{
+    public class TestClass
+    {
+        public TestClass(string argument)
+        {
+
+        }
+    }
+}

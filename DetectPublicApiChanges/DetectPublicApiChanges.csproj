@@ -230,7 +230,6 @@
     <Compile Include="Analysis\PublicMemberDetection\PublicInterfaceModifierDetector.cs" />
     <Compile Include="Analysis\Filters\ProjectRegexFilterExtensions.cs" />
     <Compile Include="Analysis\Roslyn\StructDeclarationSyntaxExtensions.cs" />
-    <Compile Include="Analysis\Roslyn\PropertyDeclarationSyntaxExtensions.cs" />
     <Compile Include="Analysis\Roslyn\SyntaxNodeExtensions.cs" />
     <Compile Include="Analysis\StructureIndex\IndexItemFactory.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\GenericStructSyntaxNodeAnalyzer.cs" />

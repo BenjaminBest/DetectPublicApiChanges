@@ -16,5 +16,8 @@
         public const string InternalClassInsidePublicClass = "DetectPublicApiChanges.Tests.TestCases.InternalClassInsidePublicClass.txt";
         public const string NestedPublicClasses = "DetectPublicApiChanges.Tests.TestCases.NestedPublicClasses.txt";
         public const string PublicInterface = "DetectPublicApiChanges.Tests.TestCases.PublicInterface.txt";
+        public const string CtorWith1ArgumentInPublicClass = "DetectPublicApiChanges.Tests.TestCases.CtorWith1ArgumentInPublicClass.txt";
+        public const string CtorWith2ArgumentsInPublicClass = "DetectPublicApiChanges.Tests.TestCases.CtorWith2ArgumentsInPublicClass.txt";
+        public const string Methods = "DetectPublicApiChanges.Tests.TestCases.Methods.txt";
     }
 }

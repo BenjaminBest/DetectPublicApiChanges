@@ -18,20 +18,6 @@ namespace DetectPublicApiChanges.Analysis.Roslyn
         }
 
         /// <summary>
-        /// Gets the full name.
-        /// </summary>
-        /// <param name="syntax">The syntax.</param>
-        /// <returns></returns>
-        public static string GetFullName(this StructDeclarationSyntax syntax)
-        {
-            NamespaceDeclarationSyntax namespaceDeclarationSyntax;
-            if (!SyntaxNodeHelper.TryGetParentSyntax(syntax, out namespaceDeclarationSyntax))
-                return string.Empty;
-
-            return namespaceDeclarationSyntax.Name + "." + syntax.Identifier;
-        }
-
-        /// <summary>
         /// Determines whether this instance is generic.
         /// </summary>
         /// <param name="syntax">The syntax.</param>

@@ -1,0 +1,11 @@
+﻿namespace Test.TestCases
+{
+    public interface ITestInterface<TType> where TType : class
+    {
+        TType TestMethod(string argument);
+
+        TType TestProperty { get; set; }
+
+        TType TestGenericMethod<TArgumentType>(TArgumentType argument) where TArgumentType : class, new();
+    }
+}

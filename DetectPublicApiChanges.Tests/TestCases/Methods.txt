@@ -1,0 +1,101 @@
+﻿namespace Test.TestCases
+{
+    public class TestClass<TGeneric> where TGeneric : class
+    {
+        public TestClass()
+        {
+
+        }
+
+        public bool TestMethod()
+        {
+            return true;
+        }
+
+        public static bool StaticTestMethodWithArgument(string argument)
+        {
+            return true;
+        }
+
+        public bool TestMethodWith1Argument(string argument)
+        {
+            return true;
+        }
+
+        public bool TestMethodWithRefArgument(ref string argument)
+        {
+            return true;
+        }
+
+        public bool TestMethodWithOutArgument(out string argument)
+        {
+            argument = string.Empty;
+            return true;
+        }
+
+        public bool TestMethodWith2Arguments(string argument1, int argument2)
+        {
+            return true;
+        }
+
+        public bool TestMethodWithGenericArgument(TGeneric argument)
+        {
+            return true;
+        }
+
+        public TGeneric TestMethodWithGenericReturnType(string argument)
+        {
+            return default(TGeneric);
+        }
+
+        public class NestedTestClass<TGeneric> where TGeneric : class
+        {
+            public NestedTestClass()
+            {
+
+            }
+
+            public bool TestMethod()
+            {
+                return true;
+            }
+
+            public static bool StaticTestMethodWithArgument(string argument)
+            {
+                return true;
+            }
+
+            public bool TestMethodWithRefArgument(ref string argument)
+            {
+                return true;
+            }
+
+            public bool TestMethodWithOutArgument(out string argument)
+            {
+                argument = string.Empty;
+                return true;
+            }
+
+            public bool TestMethodWith1Argument(string argument)
+            {
+                return true;
+            }
+
+            public bool TestMethodWith2Arguments(string argument1, int argument2)
+            {
+                return true;
+            }
+
+            public bool TestMethodWithGenericArgument(TGeneric argument)
+            {
+                return true;
+            }
+
+            public TGeneric TestMethodWithGenericReturnType(string argument)
+            {
+                return default(TGeneric);
+            }
+
+        }
+    }
+}

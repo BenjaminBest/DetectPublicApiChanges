@@ -29,23 +29,6 @@ namespace DetectPublicApiChanges.Analysis.Roslyn
         }
 
         /// <summary>
-        /// Gets the full name.
-        /// </summary>
-        /// <param name="syntax">The syntax.</param>
-        /// <returns></returns>
-        public static string GetFullName(this ConstructorDeclarationSyntax syntax)
-        {
-            var parentNameSpace = string.Empty;
-            var classStructure = syntax.Parent as ClassDeclarationSyntax;
-            if (classStructure != null)
-                parentNameSpace = classStructure.GetFullName();
-            else if (syntax.Parent is InterfaceDeclarationSyntax)
-                parentNameSpace = ((InterfaceDeclarationSyntax)syntax.Parent).GetFullName();
-
-            return parentNameSpace + "." + syntax.Identifier;
-        }
-
-        /// <summary>
         /// Determines whether this instance is static.
         /// </summary>
         /// <param name="syntax">The syntax.</param>

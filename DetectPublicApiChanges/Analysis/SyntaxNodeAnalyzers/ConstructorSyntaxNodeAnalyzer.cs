@@ -78,8 +78,8 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
 
             foreach (var param in syntax.GetParameters())
             {
-                key.Append(param.Identifier.ValueText);
                 key.Append(param.Type);
+                key.Append(param.Identifier.ValueText);
             }
 
             return key.ToString();
