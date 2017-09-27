@@ -44,14 +44,14 @@
         <div class="column title-column">
             <h2 id="page-title" class="ng-binding">All detected changes</h2>
             <h3 class="page-subtitle">Below all changed classes and interfaces are in detail listed</h3>
-            <p>This report all projects, classes or interfaces which are affected by breaking changes on the left side. If you click on them, the browser
+            <p>This report contains all projects, classes or interfaces which are affected by breaking changes on the left side. If you click on them, the browser
                 scrolls to the detailes for that item. The numbers on the right side of the navigation page shows how many items are affected.</p>
             <p>The main view displays for all affected classes and interfaces the changes in detail. The header of such an detail shows the class or interface name,
                 followed by the full namespace. Below the actual changes are described.</p>
             <p>Changes can be removed or changes methods, constructors, properties or the class/interface itself could be missed. This is outlined
                 by the tags on the right side.</p>
             <p>Be aware that a lot of breaking changes will not (yet) be identified.&nbsp;<i class=" fa fa-exclamation-circle"></i></p>
-            @if (Model.HasChangeLog)
+            @if (Model.ChangeLog.Count()>0)
             {
                 <h3 class="page-subtitle" id="#Changelog">Repository changelog</h3>
 

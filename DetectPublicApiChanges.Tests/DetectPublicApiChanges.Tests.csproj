@@ -180,6 +180,7 @@
     <Compile Include="Analysis\SyntaxNodeAnalyzers\ConstructorSyntaxNodeAnalyzerTests.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\InterfaceSyntaxNodeAnalyzerTests.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\MethodSyntaxNodeAnalyzerTests.cs" />
+    <Compile Include="Common\DateParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestCases\Helpers\MockCreator.cs" />
     <Compile Include="TestCases\Helpers\SyntaxNodeTestHelper.cs" />
@@ -193,7 +194,6 @@
   <ItemGroup>
     <Folder Include="Analysis\PublicMemberDetection\" />
     <Folder Include="Analysis\StructureIndex\" />
-    <Folder Include="Common\" />
     <Folder Include="Extensions\" />
     <Folder Include="Interfaces\" />
     <Folder Include="Jobs\" />

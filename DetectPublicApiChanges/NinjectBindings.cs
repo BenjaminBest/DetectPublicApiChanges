@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using DetectPublicApiChanges.Analysis.PublicMemberDetection;
+﻿using DetectPublicApiChanges.Analysis.PublicMemberDetection;
 using DetectPublicApiChanges.Analysis.StructureIndex;
 using DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers;
 using DetectPublicApiChanges.Common;
@@ -14,78 +13,91 @@ using DetectPublicApiChanges.SourceControl.Subversion;
 using DetectPublicApiChanges.Steps;
 using log4net;
 using Ninject.Modules;
+using System.Collections.Generic;
 
 namespace DetectPublicApiChanges
 {
-    public class NinjectBindings : NinjectModule
-    {
-        /// <summary>
-        /// Loads the module into the kernel.
-        /// </summary>
-        public override void Load()
-        {
-            //Common
-            Bind<IOptions>().To<Options>().InSingletonScope();
-            Bind<IFileService>().To<FileService>();
-            Bind<IJobRegistry>().To<JobRegistry>().InSingletonScope();
+	public class NinjectBindings : NinjectModule
+	{
+		/// <summary>
+		/// Loads the module into the kernel.
+		/// </summary>
+		public override void Load()
+		{
+			//Common
+			Bind<IOptions>().To<Options>().InSingletonScope();
+			Bind<IFileService>().To<FileService>();
+			Bind<IJobRegistry>().To<JobRegistry>().InSingletonScope();
 
-            //Source control
-            Bind<ISourceControlClient>().To<SubversionSourceControlClient>();
-            Bind<ISourceControlClient>().To<GitSourceControlClient>();
-            Bind<ISourceControlFactory>().To<SourceControlFactory>();
+			//Source control
+			Bind<ISourceControlClient>().To<SubversionSourceControlClient>();
+			Bind<ISourceControlClient>().To<GitSourceControlClient>();
+			Bind<ISourceControlFactory>().To<SourceControlFactory>();
 
-            Bind<ILog>().ToMethod(context =>
-            {
-                if (context.Request?.ParentContext == null)
-                    return LogManager.GetLogger(typeof(Program));
+			Bind<ILog>().ToMethod(context =>
+			{
+				if (context.Request?.ParentContext == null)
+					return LogManager.GetLogger(typeof(Program));
 
-                return LogManager.GetLogger(context.Request.ParentContext.Plan.Type);
-            });
+				return LogManager.GetLogger(context.Request.ParentContext.Plan.Type);
+			});
 
-            Bind<IStore>().To<Store>().InSingletonScope();
-            Bind<IFileSerializer>().To<NetJsonSerializer>();
+			Bind<IStore>().To<Store>().InSingletonScope();
+			Bind<IFileSerializer>().To<NetJsonSerializer>();
 
-            //Rendering
-            Bind<IRenderer>().To<RazorEngineRenderer>().InSingletonScope();
-            Bind<IReportViewModelCreator>().To<ReportViewModelCreator>();
+			//Rendering
+			Bind<IRenderer>().To<RazorEngineRenderer>().InSingletonScope();
+			Bind<IReportViewModelCreator>().To<BreakingChangesReportViewModelCreator>().WhenInjectedInto<BreakingChangesReportCreationStep>();
+			Bind<IReportViewModelCreator>().To<ObsoletesReportViewModelCreator>().WhenInjectedInto<ObsoletesReportCreationStep>();
 
-            //Public modifier detection
-            Bind<IPublicModifierDetector>().To<PublicClassModifierDetector>();
-            Bind<IPublicModifierDetector>().To<PublicInterfaceModifierDetector>();
-            Bind<IPublicModifierDetector>().To<PublicConstructorModifierDetector>();
-            Bind<IPublicModifierDetector>().To<PublicMethodModifierDetector>();
-            Bind<IPublicModifierDetector>().To<PublicPropertyModifierDetector>();
-            Bind<IPublicModifierDetector>().To<PublicStructModifierDetector>();
+			//Public modifier detection
+			Bind<IPublicModifierDetector>().To<PublicClassModifierDetector>();
+			Bind<IPublicModifierDetector>().To<PublicInterfaceModifierDetector>();
+			Bind<IPublicModifierDetector>().To<PublicConstructorModifierDetector>();
+			Bind<IPublicModifierDetector>().To<PublicMethodModifierDetector>();
+			Bind<IPublicModifierDetector>().To<PublicPropertyModifierDetector>();
+			Bind<IPublicModifierDetector>().To<PublicStructModifierDetector>();
 
-            //SyntaxNode analyzer
-            Bind<ISyntaxNodeAnalyzer>().To<ClassSyntaxNodeAnalyzer>();
-            Bind<ISyntaxNodeAnalyzer>().To<GenericClassSyntaxNodeAnalyzer>();
-            Bind<ISyntaxNodeAnalyzer>().To<InterfaceSyntaxNodeAnalyzer>();
-            Bind<ISyntaxNodeAnalyzer>().To<GenericInterfaceSyntaxNodeAnalyzer>();
-            Bind<ISyntaxNodeAnalyzer>().To<PropertySyntaxNodeAnalyzer>();
-            Bind<ISyntaxNodeAnalyzer>().To<MethodSyntaxNodeAnalyzer>();
-            Bind<ISyntaxNodeAnalyzer>().To<ConstructorSyntaxNodeAnalyzer>();
-            Bind<ISyntaxNodeAnalyzer>().To<StaticConstructorSyntaxNodeAnalyzer>();
-            Bind<ISyntaxNodeAnalyzer>().To<PartialClassSyntaxNodeAnalyzer>();
-            Bind<ISyntaxNodeAnalyzer>().To<StructSyntaxNodeAnalyzer>();
-            Bind<ISyntaxNodeAnalyzer>().To<GenericStructSyntaxNodeAnalyzer>();
-            Bind<ISyntaxNodeAnalyzerRepository>().To<SyntaxNodeAnalyzerRepository>();
+			//SyntaxNode analyzer
+			Bind<ISyntaxNodeAnalyzer>().To<ClassSyntaxNodeAnalyzer>();
+			Bind<ISyntaxNodeAnalyzer>().To<GenericClassSyntaxNodeAnalyzer>();
+			Bind<ISyntaxNodeAnalyzer>().To<InterfaceSyntaxNodeAnalyzer>();
+			Bind<ISyntaxNodeAnalyzer>().To<GenericInterfaceSyntaxNodeAnalyzer>();
+			Bind<ISyntaxNodeAnalyzer>().To<PropertySyntaxNodeAnalyzer>();
+			Bind<ISyntaxNodeAnalyzer>().To<MethodSyntaxNodeAnalyzer>();
+			Bind<ISyntaxNodeAnalyzer>().To<ConstructorSyntaxNodeAnalyzer>();
+			Bind<ISyntaxNodeAnalyzer>().To<StaticConstructorSyntaxNodeAnalyzer>();
+			Bind<ISyntaxNodeAnalyzer>().To<PartialClassSyntaxNodeAnalyzer>();
+			Bind<ISyntaxNodeAnalyzer>().To<StructSyntaxNodeAnalyzer>();
+			Bind<ISyntaxNodeAnalyzer>().To<GenericStructSyntaxNodeAnalyzer>();
+			Bind<ISyntaxNodeAnalyzerRepository>().To<SyntaxNodeAnalyzerRepository>();
 
-            //Indexing
-            Bind<IStructureIndexComparator>().To<StructureIndexKeyComparator>();
-            Bind<IStructureIndex>().To<StructureIndex>();
-            Bind<IIndexItemFactory>().To<IndexItemFactory>().InSingletonScope();
+			//Indexing
+			Bind<IStructureIndexComparator>().To<StructureIndexKeyComparator>();
+			Bind<IStructureIndex>().To<StructureIndex>();
+			Bind<IIndexItemFactory>().To<IndexItemFactory>().InSingletonScope();
 
-            //Jobs & Steps
-            Bind<IJob>().To<DetectChangesJob>().WithConstructorArgument("steps", new List<IStep>
-            {
-                (InitializationStep) Kernel.GetService(typeof(InitializationStep)),
-                (RepositoryCheckoutStep) Kernel.GetService(typeof(RepositoryCheckoutStep)),
-                (AnalyzeDocumentTreeStep) Kernel.GetService(typeof(AnalyzeDocumentTreeStep)),
-                (IndexComparisonStep) Kernel.GetService(typeof(IndexComparisonStep)),
-                (ReportCreationStep) Kernel.GetService(typeof(ReportCreationStep)),
-                (CleanupStep) Kernel.GetService(typeof(CleanupStep))
-            });
-        }
-    }
+			//Jobs & Steps
+			Bind<IJob>().To<DetectChangesJob>().WithConstructorArgument("steps", new List<IStep>
+			{
+				(InitializationStep) Kernel.GetService(typeof(InitializationStep)),
+				(RepositoryCheckoutStep) Kernel.GetService(typeof(RepositoryCheckoutStep)),
+				(AnalyzeDocumentTreeStep) Kernel.GetService(typeof(AnalyzeDocumentTreeStep)),
+				(IndexComparisonStep) Kernel.GetService(typeof(IndexComparisonStep)),
+				(BreakingChangesReportCreationStep) Kernel.GetService(typeof(BreakingChangesReportCreationStep)),
+				(CleanupStep) Kernel.GetService(typeof(CleanupStep))
+			});
+
+			Bind<IJob>().To<DetectObsoletesJob>().WithConstructorArgument("steps", new List<IStep>
+			{
+				(InitializationStep) Kernel.GetService(typeof(InitializationStep)),
+				(RepositoryCheckoutStep) Kernel.GetService(typeof(RepositoryCheckoutStep)),
+				(AnalyzeDocumentTreeStep) Kernel.GetService(typeof(AnalyzeDocumentTreeStep)),
+				(IndexComparisonStep) Kernel.GetService(typeof(IndexComparisonStep)),
+				(BreakingChangesReportCreationStep) Kernel.GetService(typeof(BreakingChangesReportCreationStep)),
+				(ObsoletesReportCreationStep) Kernel.GetService(typeof(ObsoletesReportCreationStep)),
+				(CleanupStep) Kernel.GetService(typeof(CleanupStep))
+			});
+		}
+	}
 }

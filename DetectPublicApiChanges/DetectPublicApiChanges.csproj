@@ -223,16 +223,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analysis\Obsoletes\ObsoleteSyntaxNodeAnalyzer.cs" />
     <Compile Include="Analysis\PublicMemberDetection\PublicStructModifierDetector.cs" />
     <Compile Include="Analysis\PublicMemberDetection\PublicPropertyModifierDetector.cs" />
     <Compile Include="Analysis\PublicMemberDetection\PublicMethodModifierDetector.cs" />
     <Compile Include="Analysis\PublicMemberDetection\PublicConstructorModifierDetector.cs" />
     <Compile Include="Analysis\PublicMemberDetection\PublicInterfaceModifierDetector.cs" />
     <Compile Include="Analysis\Filters\ProjectRegexFilterExtensions.cs" />
+    <Compile Include="Analysis\Roslyn\AttributeArgumentSyntaxExtensions.cs" />
+    <Compile Include="Analysis\Roslyn\AttributeSyntaxExtensions.cs" />
     <Compile Include="Analysis\Roslyn\StructDeclarationSyntaxExtensions.cs" />
     <Compile Include="Analysis\Roslyn\SyntaxNodeExtensions.cs" />
     <Compile Include="Analysis\StructureIndex\IndexItemFactory.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\GenericStructSyntaxNodeAnalyzer.cs" />
+    <Compile Include="Analysis\SyntaxNodeAnalyzers\ObsoleteEntityInformation.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\StructSyntaxNodeAnalyzer.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\GenericClassSyntaxNodeAnalyzer.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\GenericInterfaceSyntaxNodeAnalyzer.cs" />
@@ -246,8 +250,10 @@
     <Compile Include="Analysis\SyntaxNodeAnalyzers\ConstructorSyntaxNodeAnalyzer.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\ClassSyntaxNodeAnalyzer.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\SyntaxNodeAnalyzerRepository.cs" />
+    <Compile Include="Common\DateParser.cs" />
     <Compile Include="Common\Timer.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
+    <Compile Include="Interfaces\IObsoleteEntityInformation.cs" />
     <Compile Include="Interfaces\IIndexItemFactory.cs" />
     <Compile Include="Interfaces\IDiagnosticAnalyzerDescriptor.cs" />
     <Compile Include="Interfaces\IPublicClassModifierDetector.cs" />
@@ -285,6 +291,7 @@
     <Compile Include="Interfaces\IStore.cs" />
     <Compile Include="Interfaces\ISyntaxNodeAnalyzer.cs" />
     <Compile Include="Interfaces\ISyntaxNodeAnalyzerRepository.cs" />
+    <Compile Include="Jobs\DetectObsoletesJob.cs" />
     <Compile Include="Jobs\DetectChangesJob.cs" />
     <Compile Include="NinjectBindings.cs" />
     <Compile Include="Program.cs" />
@@ -292,18 +299,20 @@
     <Compile Include="Interfaces\IJob.cs" />
     <Compile Include="Interfaces\IOptions.cs" />
     <Compile Include="Interfaces\IStep.cs" />
+    <Compile Include="Report\ObsoletesReportViewModelCreator.cs" />
     <Compile Include="Report\Models\ChangeLogViewModel.cs" />
     <Compile Include="Report\Models\DetailViewModel.cs" />
     <Compile Include="Report\Models\DifferenceViewModel.cs" />
     <Compile Include="Report\Models\ReportViewModel.cs" />
     <Compile Include="Report\Mvc\Renderer.cs" />
-    <Compile Include="Report\ReportViewModelCreator.cs" />
+    <Compile Include="Report\BreakingChangesReportViewModelCreator.cs" />
     <Compile Include="Steps\AnalyzeDocumentTreeStep.cs" />
     <Compile Include="Report\Mvc\HtmlTemplateBase.cs" />
     <Compile Include="Report\Mvc\MyHtmlHelper.cs" />
     <Compile Include="Steps\CleanupStep.cs" />
+    <Compile Include="Steps\ObsoletesReportCreationStep.cs" />
     <Compile Include="Steps\RepositoryCheckoutStep.cs" />
-    <Compile Include="Steps\ReportCreationStep.cs" />
+    <Compile Include="Steps\BreakingChangesReportCreationStep.cs" />
     <Compile Include="Steps\IndexComparisonStep.cs" />
     <Compile Include="Steps\InitializationStep.cs" />
   </ItemGroup>
@@ -316,7 +325,10 @@
     <Content Include="Views\_Layout.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Views\Report.cshtml">
+    <Content Include="Views\BreakingChangesReport.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\ObsoleteReport.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Views\web.config" />
