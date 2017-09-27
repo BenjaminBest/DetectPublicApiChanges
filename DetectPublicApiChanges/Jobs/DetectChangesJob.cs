@@ -20,7 +20,7 @@ namespace DetectPublicApiChanges.Jobs
 		/// <value>
 		/// The name of the job.
 		/// </value>
-		public string JobName => "DetectObsoletes";
+		public string JobName => "DetectChanges";
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DetectChangesJob"/> class.
