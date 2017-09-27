@@ -34,7 +34,7 @@ namespace DetectPublicApiChanges.Common
 		/// <value>
 		/// The job.
 		/// </value>
-		[Option("job", HelpText = "Name of the job", DefaultValue = "DetectObsoletesJob")]
+		[Option("job", HelpText = "Name of the job", DefaultValue = "DetectObsoletes")]
 		public string Job { get; set; }
 
 		/// <summary>
