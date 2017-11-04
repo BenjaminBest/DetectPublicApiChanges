@@ -1,150 +1,153 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using DetectPublicApiChanges.Analysis.Filters;
+﻿using DetectPublicApiChanges.Analysis.Filters;
 using DetectPublicApiChanges.Analysis.Roslyn;
 using DetectPublicApiChanges.Analysis.StructureIndex;
 using DetectPublicApiChanges.Common;
 using DetectPublicApiChanges.Interfaces;
 using log4net;
 using Microsoft.CodeAnalysis;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DetectPublicApiChanges.Steps
 {
-    /// <summary>
-    /// Step for analyzing projects
-    /// </summary>
-    /// <seealso cref="Common.StepBase{AnalyzeProjectsStep}" />
-    /// <seealso cref="IStep" />
-    public class AnalyzeDocumentTreeStep : StepBase<AnalyzeDocumentTreeStep>, IStep
-    {
-        /// <summary>
-        /// The logger
-        /// </summary>
-        private readonly ILog _logger;
+	/// <summary>
+	/// Step for analyzing projects
+	/// </summary>
+	/// <seealso cref="Common.StepBase{AnalyzeProjectsStep}" />
+	/// <seealso cref="IStep" />
+	public class AnalyzeDocumentTreeStep : StepBase<AnalyzeDocumentTreeStep>, IStep
+	{
+		/// <summary>
+		/// The logger
+		/// </summary>
+		private readonly ILog _logger;
 
-        /// <summary>
-        /// The store
-        /// </summary>
-        private readonly IStore _store;
+		/// <summary>
+		/// The store
+		/// </summary>
+		private readonly IStore _store;
 
-        /// <summary>
-        /// The options
-        /// </summary>
-        private readonly IOptions _options;
+		/// <summary>
+		/// The options
+		/// </summary>
+		private readonly IOptions _options;
 
-        /// <summary>
-        /// The syntax node analyzers
-        /// </summary>
-        private readonly ISyntaxNodeAnalyzerRepository _syntaxNodeRepository;
+		/// <summary>
+		/// The syntax node analyzers
+		/// </summary>
+		private readonly ISyntaxNodeAnalyzerRepository _syntaxNodeRepository;
 
-        private readonly IEnumerable<IPublicModifierDetector> _modifierDetectors;
+		/// <summary>
+		/// The modifier detectors
+		/// </summary>
+		private readonly IEnumerable<IPublicModifierDetector> _modifierDetectors;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AnalyzeDocumentTreeStep" /> class.
-        /// </summary>
-        /// <param name="logger">The logger.</param>
-        /// <param name="store">The store.</param>
-        /// <param name="options">The options.</param>
-        /// <param name="syntaxNodeRepository">The syntax node repository.</param>
-        /// <param name="modifierDetectors">The modifier detectors.</param>
-        public AnalyzeDocumentTreeStep(
-            ILog logger,
-            IStore store,
-            IOptions options,
-            ISyntaxNodeAnalyzerRepository syntaxNodeRepository,
-            IEnumerable<IPublicModifierDetector> modifierDetectors)
-            : base(logger)
-        {
-            _logger = logger;
-            _store = store;
-            _options = options;
-            _syntaxNodeRepository = syntaxNodeRepository;
-            _modifierDetectors = modifierDetectors;
-        }
+		/// <summary>
+		/// Initializes a new instance of the <see cref="AnalyzeDocumentTreeStep" /> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="store">The store.</param>
+		/// <param name="options">The options.</param>
+		/// <param name="syntaxNodeRepository">The syntax node repository.</param>
+		/// <param name="modifierDetectors">The modifier detectors.</param>
+		public AnalyzeDocumentTreeStep(
+			ILog logger,
+			IStore store,
+			IOptions options,
+			ISyntaxNodeAnalyzerRepository syntaxNodeRepository,
+			IEnumerable<IPublicModifierDetector> modifierDetectors)
+			: base(logger)
+		{
+			_logger = logger;
+			_store = store;
+			_options = options;
+			_syntaxNodeRepository = syntaxNodeRepository;
+			_modifierDetectors = modifierDetectors;
+		}
 
-        /// <summary>
-        /// Runs this instance.
-        /// </summary>
-        public void Run()
-        {
-            ExecuteSafe(() =>
-            {
-                var sourceStructureIndex = new StructureIndex(_logger);
-                var targetStructureIndex = new StructureIndex(_logger);
+		/// <summary>
+		/// Runs this instance.
+		/// </summary>
+		public void Run()
+		{
+			ExecuteSafe(() =>
+			{
+				var sourceStructureIndex = new StructureIndex(_logger);
+				var targetStructureIndex = new StructureIndex(_logger);
 
-                var solutions = new List<Solution>
-                {
-                    GetSolutionAndCreateIndex(_store.GetItem<string>(StoreKeys.SolutionPathSource),sourceStructureIndex),
-                    GetSolutionAndCreateIndex(_store.GetItem<string>(StoreKeys.SolutionPathTarget),targetStructureIndex)
-                };
+				var solutions = new List<Solution>
+				{
+					GetSolutionAndCreateIndex(_store.GetItem<string>(StoreKeys.SolutionPathSource),sourceStructureIndex),
+					GetSolutionAndCreateIndex(_store.GetItem<string>(StoreKeys.SolutionPathTarget),targetStructureIndex)
+				};
 
-                _store.SetOrAddItem(StoreKeys.Solutions, solutions);
-                _store.SetOrAddItem(StoreKeys.SolutionIndexSource, sourceStructureIndex);
-                _store.SetOrAddItem(StoreKeys.SolutionIndexTarget, targetStructureIndex);
-            });
-        }
+				_store.SetOrAddItem(StoreKeys.Solutions, solutions);
+				_store.SetOrAddItem(StoreKeys.SolutionIndexSource, sourceStructureIndex);
+				_store.SetOrAddItem(StoreKeys.SolutionIndexTarget, targetStructureIndex);
+			});
+		}
 
-        /// <summary>
-        /// Gets the solution syntax tree and creates the index
-        /// </summary>
-        /// <param name="solutionPath">The solution path.</param>
-        /// <param name="index">The index.</param>
-        /// <returns></returns>
-        private Solution GetSolutionAndCreateIndex(string solutionPath, IStructureIndex index)
-        {
-            var solution = WorkspaceHelper.GetSolution(solutionPath);
-            var projects = WorkspaceHelper.GetProjects(solutionPath);
-            projects.Wait();
-            solution.Wait();
+		/// <summary>
+		/// Gets the solution syntax tree and creates the index
+		/// </summary>
+		/// <param name="solutionPath">The solution path.</param>
+		/// <param name="index">The index.</param>
+		/// <returns></returns>
+		private Solution GetSolutionAndCreateIndex(string solutionPath, IStructureIndex index)
+		{
+			var solution = WorkspaceHelper.GetSolution(solutionPath);
+			var projects = WorkspaceHelper.GetProjects(solutionPath);
+			projects.Wait();
+			solution.Wait();
 
-            solution.Result.Log();
+			solution.Result.Log();
 
-            _logger.Info($"Applying regex '{_options.RegexFilter}' to projects");
+			_logger.Info($"Applying regex '{_options.RegexFilter}' to projects");
 
 
-            foreach (var project in solution.Result.Projects.Filter(_options.RegexFilter))
-            {
-                _logger.Info($"Analyzing project '{project.Name}'");
+			foreach (var project in solution.Result.Projects.Filter(_options.RegexFilter))
+			{
+				_logger.Info($"Analyzing project '{project.Name}'");
 
-                project.Log();
+				project.Log();
 
-                foreach (var documentId in project.DocumentIds)
-                {
-                    var document = solution.Result.GetDocument(documentId);
-                    if (document.SupportsSyntaxTree)
-                    {
-                        //Syntax Tree
-                        var syntaxTree = document.GetSyntaxTreeAsync().Result;
+				foreach (var documentId in project.DocumentIds)
+				{
+					var document = solution.Result.GetDocument(documentId);
+					if (document.SupportsSyntaxTree)
+					{
+						//Syntax Tree
+						var syntaxTree = document.GetSyntaxTreeAsync().Result;
 
-                        var syntaxNode = syntaxTree?.GetRoot();
+						var syntaxNode = syntaxTree?.GetRoot();
 
-                        if (syntaxNode == null)
-                            continue;
+						if (syntaxNode == null)
+							continue;
 
-                        var items = syntaxNode.DescendantNodesAndSelf();
+						var items = syntaxNode.DescendantNodesAndSelf();
 
-                        foreach (var item in items)
-                        {
-                            if (_syntaxNodeRepository.IsSyntaxDeclarationTypeSupported(item))
-                            {
-                                //Filter non public items
-                                if (!_modifierDetectors.Any(m => m.IsPublic(item)))
-                                    continue;
+						foreach (var item in items)
+						{
+							if (_syntaxNodeRepository.IsSyntaxDeclarationTypeSupported(item))
+							{
+								//Filter non public items
+								if (!_modifierDetectors.Any(m => m.IsPublic(item)))
+									continue;
 
-                                //TODO: Project should not be writable, should be automatically determined
-                                var indexItem = _syntaxNodeRepository.Analyze(item);
-                                indexItem.Project = project;
+								//TODO: Project should not be writable, should be automatically determined
+								var indexItem = _syntaxNodeRepository.Analyze(item);
+								indexItem.Project = project;
 
-                                index.AddOrUpdateItem(indexItem);
-                            }
-                        }
-                    }
-                }
-            }
+								index.AddOrUpdateItem(indexItem);
+							}
+						}
+					}
+				}
+			}
 
-            _logger.Info($"Index now has {index.Items.Count} items");
+			_logger.Info($"Index now has {index.Items.Count} items");
 
-            return solution.Result;
-        }
-    }
+			return solution.Result;
+		}
+	}
 }

@@ -47,7 +47,8 @@ namespace DetectPublicApiChanges
 
             //Rendering
             Bind<IRenderer>().To<RazorEngineRenderer>().InSingletonScope();
-            Bind<IReportViewModelCreator>().To<ReportViewModelCreator>();
+            Bind<IReportViewModelCreator>().To<BreakingChangesReportViewModelCreator>().WhenInjectedInto<BreakingChangesReportCreationStep>();
+            Bind<IReportViewModelCreator>().To<ObsoletesReportViewModelCreator>().WhenInjectedInto<ObsoletesReportCreationStep>();
 
             //Public modifier detection
             Bind<IPublicModifierDetector>().To<PublicClassModifierDetector>();
@@ -75,8 +76,8 @@ namespace DetectPublicApiChanges
             Bind<IStructureIndexComparator>().To<StructureIndexComparator>();
             Bind<IStructureIndex>().To<StructureIndex>();
             Bind<IIndexItemFactory>().To<IndexItemFactory>().InSingletonScope();
-            Bind<IStructureIndexSourceItemComparator>().To<ItemSourceKeyComparator>();
-            Bind<IStructureIndexTargetItemComparator>().To<ItemTargetInterfacePropertyComparator>();
+            Bind<IStructureIndexSourceItemComparator>().To<ItemSourceKeyComparator>().InSingletonScope();
+            Bind<IStructureIndexTargetItemComparator>().To<ItemTargetInterfacePropertyComparator>().InSingletonScope();
 
             //Jobs & Steps
             Bind<IJob>().To<DetectChangesJob>().WithConstructorArgument("steps", new List<IStep>
@@ -85,7 +86,18 @@ namespace DetectPublicApiChanges
                 (RepositoryCheckoutStep) Kernel.GetService(typeof(RepositoryCheckoutStep)),
                 (AnalyzeDocumentTreeStep) Kernel.GetService(typeof(AnalyzeDocumentTreeStep)),
                 (IndexComparisonStep) Kernel.GetService(typeof(IndexComparisonStep)),
-                (ReportCreationStep) Kernel.GetService(typeof(ReportCreationStep)),
+                (BreakingChangesReportCreationStep) Kernel.GetService(typeof(BreakingChangesReportCreationStep)),
+                (CleanupStep) Kernel.GetService(typeof(CleanupStep))
+            });
+
+            Bind<IJob>().To<DetectObsoletesJob>().WithConstructorArgument("steps", new List<IStep>
+            {
+                (InitializationStep) Kernel.GetService(typeof(InitializationStep)),
+                (RepositoryCheckoutStep) Kernel.GetService(typeof(RepositoryCheckoutStep)),
+                (AnalyzeDocumentTreeStep) Kernel.GetService(typeof(AnalyzeDocumentTreeStep)),
+                (IndexComparisonStep) Kernel.GetService(typeof(IndexComparisonStep)),
+                (BreakingChangesReportCreationStep) Kernel.GetService(typeof(BreakingChangesReportCreationStep)),
+                (ObsoletesReportCreationStep) Kernel.GetService(typeof(ObsoletesReportCreationStep)),
                 (CleanupStep) Kernel.GetService(typeof(CleanupStep))
             });
         }

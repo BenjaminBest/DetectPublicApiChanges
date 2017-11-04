@@ -8,9 +8,9 @@ namespace DetectPublicApiChanges.Jobs
 	/// <summary>
 	/// Starting Self diagnosis
 	/// </summary>
-	/// <seealso cref="Common.JobBase{DetectChanges}" />
+	/// <seealso cref="Common.JobBase{DetectObsoletesJob}" />
 	/// <seealso cref="IJob" />
-	public class DetectChangesJob : JobBase<DetectChangesJob>, IJob
+	public class DetectObsoletesJob : JobBase<DetectObsoletesJob>, IJob
 	{
 		private readonly IEnumerable<IStep> _steps;
 
@@ -20,14 +20,14 @@ namespace DetectPublicApiChanges.Jobs
 		/// <value>
 		/// The name of the job.
 		/// </value>
-		public string JobName => "DetectChanges";
+		public string JobName => "DetectObsoletes";
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DetectChangesJob"/> class.
 		/// </summary>
 		/// <param name="logger">The logger.</param>
 		/// <param name="steps">The steps.</param>
-		public DetectChangesJob(ILog logger, IEnumerable<IStep> steps)
+		public DetectObsoletesJob(ILog logger, IEnumerable<IStep> steps)
 			: base(logger)
 		{
 			_steps = steps;
