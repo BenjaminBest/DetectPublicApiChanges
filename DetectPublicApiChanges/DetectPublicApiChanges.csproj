@@ -232,6 +232,8 @@
     <Compile Include="Analysis\Roslyn\StructDeclarationSyntaxExtensions.cs" />
     <Compile Include="Analysis\Roslyn\SyntaxNodeExtensions.cs" />
     <Compile Include="Analysis\StructureIndex\IndexItemFactory.cs" />
+    <Compile Include="Analysis\StructureIndex\StructureIndexItemTargetInterfacePropertyComparator.cs" />
+    <Compile Include="Analysis\StructureIndex\StructureIndexItemKeyComparator.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\GenericStructSyntaxNodeAnalyzer.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\StructSyntaxNodeAnalyzer.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\GenericClassSyntaxNodeAnalyzer.cs" />
@@ -253,7 +255,7 @@
     <Compile Include="Interfaces\IPublicClassModifierDetector.cs" />
     <Compile Include="Analysis\PublicMemberDetection\PublicClassModifierDetector.cs" />
     <Compile Include="Analysis\StructureIndex\StructureIndexComparisonResult.cs" />
-    <Compile Include="Analysis\StructureIndex\StructureIndexKeyComparator.cs" />
+    <Compile Include="Analysis\StructureIndex\StructureIndexComparator.cs" />
     <Compile Include="Common\FileService.cs" />
     <Compile Include="Interfaces\IFileService.cs" />
     <Compile Include="Interfaces\IRenderer.cs" />
@@ -283,6 +285,8 @@
     <Compile Include="Interfaces\IFileSerializer.cs" />
     <Compile Include="Interfaces\IJobRegistry.cs" />
     <Compile Include="Interfaces\IStore.cs" />
+    <Compile Include="Interfaces\IStructureIndexTargetItemComparator.cs" />
+    <Compile Include="Interfaces\IStructureIndexSourceItemComparator.cs" />
     <Compile Include="Interfaces\ISyntaxNodeAnalyzer.cs" />
     <Compile Include="Interfaces\ISyntaxNodeAnalyzerRepository.cs" />
     <Compile Include="Jobs\DetectChangesJob.cs" />
