@@ -1,0 +1,9 @@
+﻿namespace Test.TestCases
+{    
+	public abstract class TestClass
+	{
+		protected TestClass()
+		{
+		}
+	}
+}

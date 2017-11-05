@@ -39,5 +39,17 @@ namespace DetectPublicApiChanges.Analysis.Roslyn
         {
             return syntax.TypeParameterList != null && syntax.TypeParameterList.Parameters.Count > 0;
         }
+
+        /// <summary>
+        /// Determines whether this instance is static.
+        /// </summary>
+        /// <param name="syntax">The syntax.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified syntax is static; otherwise, <c>false</c>.
+        /// </returns>
+        public static bool IsStatic(this MethodDeclarationSyntax syntax)
+        {
+            return syntax.Modifiers.Any(m => m.ValueText.Equals("static"));
+        }
     }
 }

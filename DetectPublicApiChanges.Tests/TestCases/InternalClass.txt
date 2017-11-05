@@ -13,5 +13,20 @@
         }
 
         public bool TestProperty { get; set; }
+
+        public struct TestStruct
+        {
+            public TestStruct(string argument)
+            {
+                TestProperty = false;
+            }
+
+            public bool TestMethod(string argument)
+            {
+                return true;
+            }
+
+            public bool TestProperty { get; set; }
+        }
     }
 }

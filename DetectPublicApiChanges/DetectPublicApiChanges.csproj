@@ -235,9 +235,11 @@
     <Compile Include="Analysis\Roslyn\StructDeclarationSyntaxExtensions.cs" />
     <Compile Include="Analysis\Roslyn\SyntaxNodeExtensions.cs" />
     <Compile Include="Analysis\StructureIndex\IndexItemFactory.cs" />
-    <Compile Include="Analysis\StructureIndex\StructureIndexItemTargetInterfacePropertyComparator.cs" />
+    <Compile Include="Analysis\StructureIndex\ItemTargetInterfaceMethodComparator.cs" />
+    <Compile Include="Analysis\StructureIndex\ItemTargetInterfacePropertyComparator.cs" />
     <Compile Include="Analysis\StructureIndex\StructureIndexItemKeyComparator.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\GenericStructSyntaxNodeAnalyzer.cs" />
+    <Compile Include="Analysis\SyntaxNodeAnalyzers\StaticMethodSyntaxNodeAnalyzer.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\ObsoleteEntityInformation.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\StructSyntaxNodeAnalyzer.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\GenericClassSyntaxNodeAnalyzer.cs" />

@@ -23,6 +23,14 @@ namespace DetectPublicApiChanges.Tests.Analysis.SyntaxNodeAnalyzers
         }
 
         [TestMethod]
+        public void IsDeclarationSyntaxTypeSupported_ShouldReturnTrue_WhenAbstractClassIsTested()
+        {
+            var node = SyntaxNodeTestHelper.GetSyntaxNodeByName<ClassDeclarationSyntax>(TestCase.PublicAbstractClass, "TestClass");
+
+            new ClassSyntaxNodeAnalyzer(IndexItemFactory).IsDeclarationSyntaxTypeSupported(node).Should().BeTrue();
+        }
+
+        [TestMethod]
         public void IsDeclarationSyntaxTypeSupported_ShouldReturnFalse_WhenPartialClassIsTested()
         {
             var node = SyntaxNodeTestHelper.GetSyntaxNodeByName<ClassDeclarationSyntax>(TestCase.PublicPartialClass, "TestClass");

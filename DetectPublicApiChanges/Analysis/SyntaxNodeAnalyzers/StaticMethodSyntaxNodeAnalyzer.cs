@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Linq;
+using System.Text;
 using DetectPublicApiChanges.Analysis.Obsoletes;
 using DetectPublicApiChanges.Analysis.Roslyn;
-using DetectPublicApiChanges.Extensions;
 using DetectPublicApiChanges.Interfaces;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -10,9 +9,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
 {
     /// <summary>
-    /// The ClassSyntaxNodeAnalyzer analyzes a specific information in the syntax tree and creates a unique key which represents this information.
+    /// The MethodSyntaxNodeAnalyzer analyzes a specific information in the syntax tree and creates a unique key which represents this information.
     /// </summary>
-    public class ClassSyntaxNodeAnalyzer : ISyntaxNodeAnalyzer
+    public class StaticMethodSyntaxNodeAnalyzer : ISyntaxNodeAnalyzer
     {
         /// <summary>
         /// The index item factory
@@ -27,15 +26,15 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// </value>
         private static IDiagnosticAnalyzerDescriptor Descriptor => new DiagnosticAnalyzerDescriptor()
         {
-            DiagnosticId = "ClassMissing",
-            Category = "Class"
+            DiagnosticId = "StaticMethodMissing",
+            Category = "Method"
         };
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClassSyntaxNodeAnalyzer"/> class.
+        /// Initializes a new instance of the <see cref="MethodSyntaxNodeAnalyzer"/> class.
         /// </summary>
         /// <param name="indexItemFactory">The index item factory.</param>
-        public ClassSyntaxNodeAnalyzer(IIndexItemFactory indexItemFactory)
+        public StaticMethodSyntaxNodeAnalyzer(IIndexItemFactory indexItemFactory)
         {
             _indexItemFactory = indexItemFactory;
         }
@@ -47,14 +46,12 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// <returns></returns>
         public IIndexItem CreateItem(SyntaxNode syntaxNode)
         {
-            var node = syntaxNode as ClassDeclarationSyntax;
+            var node = syntaxNode as MethodDeclarationSyntax;
 
             if (node == null)
                 throw new ArgumentException("syntaxNode has not the correct type to be analyzed.");
 
-            return _indexItemFactory.CreateItem(CreateKey(node), syntaxNode,
-                Descriptor.AddObsoleteInformation(ObsoleteSyntaxNodeAnalyzer.GetObsoleteInformation(syntaxNode))
-                    .AddDescription($"The class {node.Identifier.ValueText} seems to be have been changed or removed"));
+            return _indexItemFactory.CreateItem(CreateKey(node), syntaxNode, Descriptor.AddObsoleteInformation(ObsoleteSyntaxNodeAnalyzer.GetObsoleteInformation(syntaxNode)).AddDescription($"The static method {node.Identifier.ValueText} seems to be have been changed or removed"));
         }
 
         /// <summary>
@@ -66,9 +63,9 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// </returns>
         public bool IsDeclarationSyntaxTypeSupported(SyntaxNode syntaxNode)
         {
-            var item = syntaxNode as ClassDeclarationSyntax;
+            var item = syntaxNode as MethodDeclarationSyntax;
 
-            return item != null && !item.Modifiers.Any(m => m.ValueText.Equals("partial")) && !item.IsGeneric();
+            return item != null && !item.IsGeneric() && item.IsStatic();
         }
 
         /// <summary>
@@ -76,9 +73,20 @@ namespace DetectPublicApiChanges.Analysis.SyntaxNodeAnalyzers
         /// </summary>
         /// <param name="syntax">The syntax.</param>
         /// <returns></returns>
-        private static string CreateKey(ClassDeclarationSyntax syntax)
+        private static string CreateKey(MethodDeclarationSyntax syntax)
         {
-            return syntax.As<SyntaxNode>().GetFullName();
+            var key = new StringBuilder(syntax.ReturnType.ToString());
+
+            key.Append(syntax.GetFullName());
+
+            foreach (var param in syntax.GetParameters())
+            {
+                key.Append(param.Modifiers);
+                key.Append(param.Type);
+                key.Append(param.Identifier.ValueText);
+            }
+
+            return key.ToString();
         }
     }
 }

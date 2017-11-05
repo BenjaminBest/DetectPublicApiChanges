@@ -55,11 +55,11 @@ namespace DetectPublicApiChanges.Tests.Analysis.SyntaxNodeAnalyzers
         }
 
         [TestMethod]
-        public void IsDeclarationSyntaxTypeSupported_ShouldReturnFalse_WhenGenericMethodIsTested()
+        public void IsDeclarationSyntaxTypeSupported_ShouldReturnTrue_WhenMethodWithGenericReturnTypeIsTested()
         {
             var node = SyntaxNodeTestHelper.GetSyntaxNodeByName<MethodDeclarationSyntax>(TestCase.Methods, "TestMethodWithGenericReturnType");
 
-            new MethodSyntaxNodeAnalyzer(IndexItemFactory).IsDeclarationSyntaxTypeSupported(node).Should().BeFalse();
+            new MethodSyntaxNodeAnalyzer(IndexItemFactory).IsDeclarationSyntaxTypeSupported(node).Should().BeTrue();
         }
 
         [TestMethod]

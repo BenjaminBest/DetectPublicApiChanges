@@ -15,7 +15,7 @@ namespace DetectPublicApiChanges.Tests.Common
 
 			var testString = $"{testDate:d}";
 			DateTime testResult;
-			testString.TryParseDate(DateParser.DateTimeFormat.UK_DATE, out testResult);
+			testString.TryParseDate(DateParser.DateTimeFormat.USA_DATE, out testResult);
 
 			testResult.Date.Year.Should().Be(2017);
 			testResult.Date.Month.Should().Be(02);

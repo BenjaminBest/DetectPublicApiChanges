@@ -1,0 +1,10 @@
+﻿namespace Test.TestCases
+{    
+	public abstract class TestClass<TGeneric> : TestClass
+		where TGeneric : class
+	{
+		protected TestClass()
+		{
+		}
+	}
+}

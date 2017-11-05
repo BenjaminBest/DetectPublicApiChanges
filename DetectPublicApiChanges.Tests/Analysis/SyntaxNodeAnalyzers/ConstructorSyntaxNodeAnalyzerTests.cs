@@ -39,6 +39,22 @@ namespace DetectPublicApiChanges.Tests.Analysis.SyntaxNodeAnalyzers
         }
 
         [TestMethod]
+        public void IsDeclarationSyntaxTypeSupported_ShouldReturnFalse_WhenCtorInAbstractClassIsTested()
+        {
+            var node = SyntaxNodeTestHelper.GetSyntaxNodeByName<ConstructorDeclarationSyntax>(TestCase.PublicAbstractClass, "TestClass");
+
+            new ConstructorSyntaxNodeAnalyzer(IndexItemFactory).IsDeclarationSyntaxTypeSupported(node).Should().BeTrue();
+        }
+
+        [TestMethod]
+        public void IsDeclarationSyntaxTypeSupported_ShouldReturnFalse_WhenCtorInAbstractGenericClassIsTested()
+        {
+            var node = SyntaxNodeTestHelper.GetSyntaxNodeByName<ConstructorDeclarationSyntax>(TestCase.PublicAbstractGenericClass, "TestClass");
+
+            new ConstructorSyntaxNodeAnalyzer(IndexItemFactory).IsDeclarationSyntaxTypeSupported(node).Should().BeTrue();
+        }
+
+        [TestMethod]
         public void IsDeclarationSyntaxTypeSupported_ShouldReturnFalse_WhenStaticCtorIsTested()
         {
             var node = SyntaxNodeTestHelper.GetSyntaxNodeByName<ConstructorDeclarationSyntax>(TestCase.PublicStaticClass, "TestClass");
@@ -87,6 +103,24 @@ namespace DetectPublicApiChanges.Tests.Analysis.SyntaxNodeAnalyzers
 
             var item = new ConstructorSyntaxNodeAnalyzer(IndexItemFactory).CreateItem(node);
             item.Key.Should().Be("Test.TestCases.TestClass.TestClassstringargument1intargument2");
+        }
+
+        [TestMethod]
+        public void CreateItem_ShouldReturnItemWithValidKey_WhenNodeIsCtorInAbstractClass()
+        {
+            var node = SyntaxNodeTestHelper.GetSyntaxNodeByName<ConstructorDeclarationSyntax>(TestCase.PublicAbstractClass, "TestClass");
+
+            var item = new ConstructorSyntaxNodeAnalyzer(IndexItemFactory).CreateItem(node);
+            item.Key.Should().Be("Test.TestCases.abstractTestClass.TestClass");
+        }
+
+        [TestMethod]
+        public void CreateItem_ShouldReturnItemWithValidKey_WhenNodeIsCtorInAbstractGenericClass()
+        {
+            var node = SyntaxNodeTestHelper.GetSyntaxNodeByName<ConstructorDeclarationSyntax>(TestCase.PublicAbstractGenericClass, "TestClass");
+
+            var item = new ConstructorSyntaxNodeAnalyzer(IndexItemFactory).CreateItem(node);
+            item.Key.Should().Be("Test.TestCases.abstractTestClassTGenericType.TestClass");
         }
     }
 }

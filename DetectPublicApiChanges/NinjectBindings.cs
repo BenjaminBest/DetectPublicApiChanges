@@ -71,6 +71,7 @@ namespace DetectPublicApiChanges
             Bind<ISyntaxNodeAnalyzer>().To<StructSyntaxNodeAnalyzer>();
             Bind<ISyntaxNodeAnalyzer>().To<GenericStructSyntaxNodeAnalyzer>();
             Bind<ISyntaxNodeAnalyzerRepository>().To<SyntaxNodeAnalyzerRepository>();
+            Bind<ISyntaxNodeAnalyzer>().To<StaticMethodSyntaxNodeAnalyzer>();
 
             //Indexing
             Bind<IStructureIndexComparator>().To<StructureIndexComparator>();
@@ -78,6 +79,7 @@ namespace DetectPublicApiChanges
             Bind<IIndexItemFactory>().To<IndexItemFactory>().InSingletonScope();
             Bind<IStructureIndexSourceItemComparator>().To<ItemSourceKeyComparator>().InSingletonScope();
             Bind<IStructureIndexTargetItemComparator>().To<ItemTargetInterfacePropertyComparator>().InSingletonScope();
+            Bind<IStructureIndexTargetItemComparator>().To<ItemTargetInterfaceMethodComparator>().InSingletonScope();
 
             //Jobs & Steps
             Bind<IJob>().To<DetectChangesJob>().WithConstructorArgument("steps", new List<IStep>

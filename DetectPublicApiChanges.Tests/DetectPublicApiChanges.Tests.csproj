@@ -51,6 +51,9 @@
     <Reference Include="FluentAssertions.Core, Version=4.19.2.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
       <HintPath>..\DetectPublicApiChanges\packages\FluentAssertions.4.19.2\lib\net45\FluentAssertions.Core.dll</HintPath>
     </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\DetectPublicApiChanges\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CodeAnalysis, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\DetectPublicApiChanges\packages\Microsoft.CodeAnalysis.Common.2.2.0\lib\netstandard1.3\Microsoft.CodeAnalysis.dll</HintPath>
     </Reference>
@@ -175,11 +178,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Analysis\Filters\ProjectRegexFilterExtensionsTests.cs" />
+    <Compile Include="Analysis\PublicMemberDetection\PublicConstructorModifierDetectorTests.cs" />
+    <Compile Include="Analysis\PublicMemberDetection\PublicPropertyModifierDetectorTests.cs" />
+    <Compile Include="Analysis\PublicMemberDetection\PublicClassModifierDetectorTests.cs" />
+    <Compile Include="Analysis\PublicMemberDetection\PublicMethodModifierDetectorTests.cs" />
+    <Compile Include="Analysis\PublicMemberDetection\PublicInterfaceModifierDetectorTests.cs" />
+    <Compile Include="Analysis\PublicMemberDetection\PublicStructModifierDetectorTests.cs" />
     <Compile Include="Analysis\Roslyn\SyntaxNodeHelperTests.cs" />
+    <Compile Include="Analysis\StructureIndex\StructureIndexComparatorTest.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\ClassSyntaxNodeAnalyzerTests.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\ConstructorSyntaxNodeAnalyzerTests.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\InterfaceSyntaxNodeAnalyzerTests.cs" />
     <Compile Include="Analysis\SyntaxNodeAnalyzers\MethodSyntaxNodeAnalyzerTests.cs" />
+    <Compile Include="Analysis\SyntaxNodeAnalyzers\PartialClassSyntaxNodeAnalyzerTests.cs" />
     <Compile Include="Common\DateParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestCases\Helpers\MockCreator.cs" />
@@ -192,8 +203,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Analysis\PublicMemberDetection\" />
-    <Folder Include="Analysis\StructureIndex\" />
     <Folder Include="Extensions\" />
     <Folder Include="Interfaces\" />
     <Folder Include="Jobs\" />
@@ -256,6 +265,15 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="TestCases\Methods.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestCases\PublicInterfaceInsideInternalClass.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestCases\PublicAbstractGenericClass.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestCases\PublicAbstractClass.txt" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
